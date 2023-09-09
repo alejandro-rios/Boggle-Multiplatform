@@ -5,8 +5,13 @@ import android.graphics.BlurMaskFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.NativePaint
-import java.util.UUID
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 class AndroidApp : Application() {
     companion object {
@@ -34,16 +39,19 @@ internal actual fun NativePaint.setMaskFilter(blurRadius: Float) {
 internal actual val isAndroid: Boolean
     get() = true
 
-actual fun randomUUID() = UUID.randomUUID().toString()
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    BoardScreen(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+    )
+}
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DefaultPreview() {
-//
-//    BoardScreen(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .padding(horizontal = 16.dp),
-//    )
-//}
+@Preview
+@Composable
+fun BoggleDiePreview() {
+    BoggleDie(letter = "B", modifier = Modifier.padding(4.dp))
+}
 

@@ -30,9 +30,7 @@ class BoggleViewModel : ViewModel() {
     var board = mutableStateListOf<String>()
         private set
 
-    private var _guessedWords = ""
-    private val guessedWords: String
-        get() = _guessedWords
+    private var positionsSet = mutableSetOf<Int>()
 
     private val httpClient = HttpClient {
         install(HttpTimeout)
@@ -42,8 +40,7 @@ class BoggleViewModel : ViewModel() {
     }
 
     init {
-        board.addAll(boardGenerator.generateBoard().toMutableList())
-        getSolution(board.toList())
+        reloadBoard()
     }
 
     override fun onCleared() {
@@ -51,26 +48,33 @@ class BoggleViewModel : ViewModel() {
     }
 
     fun reloadBoard() {
-        _guessedWords = ""
+        val boardMap: MutableMap<Int, String> = mutableMapOf()
         _uiState.value = BoggleUiState(words = emptyList())
         board.clear()
         board.addAll(boardGenerator.generateBoard().toMutableList())
+        board.forEachIndexed { index, letter ->
+            boardMap[index] = letter
+        }
+        _uiState.value = _uiState.value.copy(boardMap = boardMap)
         getSolution(board.toList())
     }
 
-    fun onBoardSwipe(value: String) {
-        if (!guessedWords.contains(value)) {
-            _guessedWords += value
-        }
+    fun onBoardSwipe(value: Int) {
+        positionsSet.add(value)
     }
 
-    fun onDragEnded() {
-        val newWords: MutableList<String> = _uiState.value.wordsGuessed.toMutableList()
-        if (_uiState.value.result.contains(_guessedWords.lowercase())) {
-            newWords.add(_guessedWords)
-            _uiState.value = _uiState.value.copy(wordsGuessed = newWords.toList())
+    fun evaluateWord() {
+        var wordToEvaluate = ""
+        val newWordsGuessed: MutableList<String> = _uiState.value.wordsGuessed.toMutableList()
+         positionsSet.forEach { index ->
+             wordToEvaluate += _uiState.value.boardMap[index]
         }
-        _guessedWords = ""
+        positionsSet.clear()
+        println(wordToEvaluate)
+        if (_uiState.value.result.contains(wordToEvaluate.lowercase())) {
+            newWordsGuessed.add(wordToEvaluate)
+            _uiState.value = _uiState.value.copy(wordsGuessed = newWordsGuessed.toList())
+        }
     }
 
     private fun getSolution(board: List<String>) {
@@ -86,6 +90,7 @@ class BoggleViewModel : ViewModel() {
 
             val words = getWordsFromBoard(board)
             _uiState.value = _uiState.value.copy(result = words)
+            println(words)
         }
     }
 
@@ -115,4 +120,5 @@ data class BoggleUiState(
     val words: List<String> = emptyList(),
     val wordsGuessed: List<String> = emptyList(),
     val result: List<String> = emptyList(),
+    val boardMap: Map<Int, String> = emptyMap(),
 )

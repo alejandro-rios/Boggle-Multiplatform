@@ -11,5 +11,3 @@ internal actual fun NativePaint.setMaskFilter(blurRadius: Float) {
 
 internal actual val isAndroid: Boolean
     get() = false
-
-actual fun randomUUID(): String = NSUUID().UUIDString()

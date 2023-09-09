@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,10 +43,8 @@ fun BoardScreen(modifier: Modifier = Modifier) {
     val boggleUiState by boggleViewModel.uiState.collectAsState()
 
     Column(
-        modifier = modifier.fillMaxWidth().onGloballyPositioned {
-            tileSize = it.size.width / 4
-        },
-        horizontalAlignment = Alignment.Start
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -59,24 +58,29 @@ fun BoardScreen(modifier: Modifier = Modifier) {
             BoggleBoard(
                 board = boggleViewModel.board,
                 modifier = Modifier
+                    .size(350.dp)
+                    .onGloballyPositioned {
+                        // (Board width - padding) / 4
+                        tileSize = (it.size.width - 8) / 4
+                    }
                     .background(
                         color = Color(0xFF1F4E78),
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(28.dp)
                     )
                     .pointerInput(Unit) {
                         detectDragGestures(
+                            onDrag = { change, _ ->
+                                start = change.position
+                                // Calculate the index of the letter being touched
+                                val index = (start.y / tileSize).toInt() * 4 + (start.x / tileSize).toInt()
+                                if (index >= 0 && index < boggleViewModel.board.size) {
+                                    boggleViewModel.onBoardSwipe(index)
+                                }
+                            },
                             onDragEnd = {
-                                boggleViewModel.onDragEnded()
+                                boggleViewModel.evaluateWord()
                             }
                         )
-                        { change, _ ->
-                            start = change.position
-                            // Calculate the index of the letter being touched
-                            val index = (start.y / tileSize).toInt() * 4 + (start.x / tileSize).toInt()
-                            if (index >= 0 && index < boggleViewModel.board.size) {
-                                boggleViewModel.onBoardSwipe(boggleViewModel.board[index])
-                            }
-                        }
                     },
             )
             Spacer(modifier = Modifier.height(30.dp))
@@ -115,13 +119,13 @@ fun BoggleBoard(
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(4),
-        contentPadding = PaddingValues(4.dp),
+        contentPadding = PaddingValues(8.dp),
         userScrollEnabled = false
     ) {
-        items(board.size) { item ->
+        items(board.size) { index ->
             BoggleDie(
-                text = board[item],
-                modifier = Modifier.padding(5.dp)
+                letter = board[index],
+                modifier = Modifier.padding(6.dp)
             )
         }
     }

@@ -7,7 +7,7 @@ import com.alejandrorios.bogglemultiplatform.App
 
 fun main() {
     application {
-        val windowState: WindowState = rememberWindowState(width = 400.dp, height = 800.dp)
+        val windowState: WindowState = rememberWindowState(width = 800.dp, height = 800.dp)
 
         Window(
             title = "Boggle Multiplatform",

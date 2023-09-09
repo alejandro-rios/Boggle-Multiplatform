@@ -11,7 +11,7 @@ plugins {
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     targetHierarchy.default()
-    android {
+    androidTarget {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "11"
@@ -40,7 +40,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
         }
-        extraSpecAttributes["resources"] = "['src/commonMain/resources/**']"
     }
 
     sourceSets {
@@ -109,11 +108,11 @@ kotlin {
 
 android {
     namespace = "com.alejandrorios.bogglemultiplatform"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 33
+        minSdk = 23
+        targetSdk = 34
 
         applicationId = "com.alejandrorios.bogglemultiplatform.androidApp"
         versionCode = 1

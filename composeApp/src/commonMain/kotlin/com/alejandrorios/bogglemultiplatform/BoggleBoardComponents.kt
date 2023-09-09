@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -28,16 +30,17 @@ private const val OFFSET = 16
 private const val BLUR_RADIUS = 40f
 
 @Composable
-fun BoggleDie(text: String, modifier: Modifier = Modifier) {
+fun BoggleDie(letter: String, modifier: Modifier = Modifier) {
 
     Card(
         modifier = modifier,
+        shape = RoundedCornerShape(16.dp),
         backgroundColor = Color.LightGray
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .padding(3.dp)
+                .padding(2.dp)
                 .coloredShadow(
                     color = Color.White
                         .copy(alpha = WHITE_ALPHA),
@@ -54,6 +57,7 @@ fun BoggleDie(text: String, modifier: Modifier = Modifier) {
                 )
                 .clip(CircleShape)
                 .background(color = Color.LightGray)
+                // If this is removed you'll see the difference only on Android
                 .layout { measurable, constraints ->
                     // Measure the composable
                     val placeable = measurable.measure(constraints)
@@ -72,8 +76,9 @@ fun BoggleDie(text: String, modifier: Modifier = Modifier) {
                 }
         ) {
             Text(
-                text = text,
-                fontSize = 24.sp,
+                text = letter,
+                fontSize = 38.sp,
+                fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(4.dp)
             )
@@ -115,5 +120,5 @@ fun Modifier.coloredShadow(
 //@Preview
 @Composable
 fun BoggleDiePreview() {
-    BoggleDie(text = "B", modifier = Modifier.padding(4.dp))
+    BoggleDie(letter = "B", modifier = Modifier.padding(4.dp))
 }
