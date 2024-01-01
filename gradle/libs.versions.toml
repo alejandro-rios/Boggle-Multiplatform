@@ -1,15 +1,15 @@
 [versions]
 
-kotlin = "1.9.20"
-agp = "8.1.0"
-compose = "1.5.10"
+kotlin = "1.9.21"
+agp = "8.1.4"
+compose = "1.5.11"
 androidx-appcompat = "1.6.1"
-androidx-activityCompose = "1.8.0"
+androidx-activityCompose = "1.8.2"
 compose-uitooling = "1.5.4"
-moko-mvvm = "0.16.0"
+moko-mvvm = "0.16.1"
 kotlinx-coroutines = "1.7.3"
-ktor = "2.3.4"
-kotlinx-serialization = "1.6.0"
+ktor = "2.3.7"
+kotlinx-serialization = "1.6.2"
 
 [libraries]
 

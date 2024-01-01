@@ -59,21 +59,28 @@ class BoggleViewModel : ViewModel() {
         getSolution(board.toList())
     }
 
-    fun onBoardSwipe(value: Int) {
-        positionsSet.add(value)
+    fun evaluateWord(dieKeys: List<Int>) {
+        positionsSet.clear()
+        positionsSet.addAll(dieKeys)
+        var wordToEvaluate = ""
+
+        positionsSet.forEach { index ->
+            wordToEvaluate += _uiState.value.boardMap[index]
+        }
+
+        if (_uiState.value.result.contains(wordToEvaluate.lowercase()) && !_uiState.value.wordsGuessed.contains(wordToEvaluate)) {
+            _uiState.value = _uiState.value.copy(isAWord = true, word = wordToEvaluate)
+        } else {
+            _uiState.value = _uiState.value.copy(isAWord = false, word = "")
+        }
     }
 
-    fun evaluateWord() {
-        var wordToEvaluate = ""
-        val newWordsGuessed: MutableList<String> = _uiState.value.wordsGuessed.toMutableList()
-         positionsSet.forEach { index ->
-             wordToEvaluate += _uiState.value.boardMap[index]
-        }
-        positionsSet.clear()
-        println(wordToEvaluate)
-        if (_uiState.value.result.contains(wordToEvaluate.lowercase())) {
-            newWordsGuessed.add(wordToEvaluate)
-            _uiState.value = _uiState.value.copy(wordsGuessed = newWordsGuessed.toList())
+    fun addWord() {
+        if (_uiState.value.word.isNotBlank()) {
+            val newWordsGuessed: MutableList<String> = _uiState.value.wordsGuessed.toMutableList()
+            newWordsGuessed.add(_uiState.value.word)
+            positionsSet.clear()
+            _uiState.value = _uiState.value.copy(isAWord = false, word = "", wordsGuessed = newWordsGuessed.toList())
         }
     }
 
@@ -95,7 +102,6 @@ class BoggleViewModel : ViewModel() {
     }
 
     private suspend fun getWordsFromBoard(board: List<String>): List<String> {
-
         val url = if (isAndroid) {
             "10.0.2.2"
         } else {
@@ -121,4 +127,6 @@ data class BoggleUiState(
     val wordsGuessed: List<String> = emptyList(),
     val result: List<String> = emptyList(),
     val boardMap: Map<Int, String> = emptyMap(),
+    val isAWord: Boolean = false,
+    val word: String = "",
 )

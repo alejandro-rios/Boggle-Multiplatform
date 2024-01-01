@@ -11,52 +11,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private const val WHITE_ALPHA = 0.8f
-private const val SHADOW_ALPHA = 0.24f
-private const val OFFSET = 16
-private const val BLUR_RADIUS = 40f
-
 @Composable
-fun BoggleDie(letter: String, modifier: Modifier = Modifier) {
+fun BoggleDie(letter: String, selected: Boolean, isAWord: Boolean = false, modifier: Modifier) {
 
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = Color.LightGray
+        backgroundColor = getCardColor(selected, isAWord)
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .padding(2.dp)
-                .coloredShadow(
-                    color = Color.White
-                        .copy(alpha = WHITE_ALPHA),
-                    offsetX = -OFFSET.dp,
-                    offsetY = -OFFSET.dp,
-                    blurRadius = BLUR_RADIUS,
-                )
-                .coloredShadow(
-                    color = Color.DarkGray
-                        .copy(alpha = SHADOW_ALPHA),
-                    offsetX = OFFSET.dp,
-                    offsetY = OFFSET.dp,
-                    blurRadius = BLUR_RADIUS
-                )
+                .padding(5.dp)
                 .clip(CircleShape)
-                .background(color = Color.LightGray)
+                .background(color = getBoxColor(selected, isAWord))
                 // If this is removed you'll see the difference only on Android
                 .layout { measurable, constraints ->
                     // Measure the composable
@@ -78,6 +53,7 @@ fun BoggleDie(letter: String, modifier: Modifier = Modifier) {
             Text(
                 text = letter,
                 fontSize = 38.sp,
+                color = getLetterColor(selected, isAWord),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(4.dp)
@@ -86,39 +62,20 @@ fun BoggleDie(letter: String, modifier: Modifier = Modifier) {
     }
 }
 
-/**
- * Code implementation taken from:
- * https://blog.apter.tech/creating-colored-blurred-shadows-in-kotlin-multiplatform-mobile-with-compose-multiplatform-d48c53c68166
- */
-fun Modifier.coloredShadow(
-    color: Color,
-    blurRadius: Float,
-    offsetY: Dp,
-    offsetX: Dp,
-) = then(
-    drawBehind {
-        drawIntoCanvas { canvas ->
-            val paint = Paint()
-            val frameworkPaint = paint.asFrameworkPaint()
+fun getCardColor(selected: Boolean, isAWord: Boolean): Color = if (selected && isAWord) {
+    Color(0xFFD28B2D)
+} else {
+    Color.LightGray
+}
 
-            if (blurRadius != 0f) {
-                frameworkPaint.setMaskFilter(blurRadius)
-            }
+fun getBoxColor(selected: Boolean, isAWord: Boolean): Color = when {
+    selected && isAWord -> Color(0xFFD28B2D)
+    selected -> Color.LightGray
+    else -> Color.White
+}
 
-            frameworkPaint.color = color.toArgb()
-
-            val centerX = size.width / 2 + offsetX.toPx()
-            val centerY = size.height / 2 + offsetY.toPx()
-            val radius = size.width.coerceAtLeast(size.height) / 2
-
-            canvas.drawCircle(Offset(centerX, centerY), radius, paint)
-        }
-    }
-)
-
-
-//@Preview
-@Composable
-fun BoggleDiePreview() {
-    BoggleDie(letter = "B", modifier = Modifier.padding(4.dp))
+fun getLetterColor(selected: Boolean, isAWord: Boolean): Color = if (selected && isAWord) {
+    Color.White
+} else {
+    Color.Black
 }

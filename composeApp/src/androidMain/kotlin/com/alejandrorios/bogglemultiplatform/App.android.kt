@@ -5,7 +5,6 @@ import android.graphics.BlurMaskFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -41,17 +40,19 @@ internal actual val isAndroid: Boolean
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    BoardScreen(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-    )
+fun NormalDie() {
+    BoggleDie(letter = "B", selected = false, modifier = Modifier.padding(10.dp))
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun BoggleDiePreview() {
-    BoggleDie(letter = "B", modifier = Modifier.padding(4.dp))
+fun SelectedDie() {
+    BoggleDie(letter = "B", selected = true, modifier = Modifier.padding(10.dp))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WordDie() {
+    BoggleDie(letter = "B", selected = true, isAWord = true, modifier = Modifier.padding(10.dp))
 }
 
