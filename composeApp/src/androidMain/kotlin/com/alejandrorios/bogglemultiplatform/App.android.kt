@@ -1,14 +1,12 @@
 package com.alejandrorios.bogglemultiplatform
 
 import android.app.Application
-import android.graphics.BlurMaskFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.NativePaint
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -29,10 +27,6 @@ class AppActivity : ComponentActivity() {
 
         setContent { App() }
     }
-}
-
-internal actual fun NativePaint.setMaskFilter(blurRadius: Float) {
-    this.maskFilter = BlurMaskFilter(blurRadius, BlurMaskFilter.Blur.NORMAL)
 }
 
 internal actual val isAndroid: Boolean
