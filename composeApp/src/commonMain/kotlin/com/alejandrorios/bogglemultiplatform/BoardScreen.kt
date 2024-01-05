@@ -1,16 +1,20 @@
 package com.alejandrorios.bogglemultiplatform
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -18,6 +22,9 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ProgressIndicatorDefaults
+import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -48,6 +55,7 @@ fun BoardScreen(modifier: Modifier = Modifier) {
     var tileSize by remember { mutableStateOf(0) }
     val boggleViewModel = getViewModel(Unit, viewModelFactory { BoggleViewModel() })
     val boggleUiState by boggleViewModel.uiState.collectAsState()
+    val checkedState = remember { mutableStateOf(true) }
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -80,6 +88,11 @@ fun BoardScreen(modifier: Modifier = Modifier) {
                 }
             )
             Spacer(modifier = Modifier.height(30.dp))
+//            Switch(
+//                checked = checkedState.value,
+//                onCheckedChange = { checkedState.value = it }
+//            )
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
                     boggleViewModel.reloadBoard()
@@ -93,6 +106,38 @@ fun BoardScreen(modifier: Modifier = Modifier) {
                     color = Color.White
                 )
             }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(modifier = Modifier.padding(horizontal = 16.dp)) {
+                WordCounter(
+                    numberOfLetters = "3", numberOfWords = boggleUiState.wordsCount.threeLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.threeLetters.wordsFound
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                WordCounter(
+                    numberOfLetters = "4", numberOfWords = boggleUiState.wordsCount.fourLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.fourLetters.wordsFound
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                WordCounter(
+                    numberOfLetters = "5", numberOfWords = boggleUiState.wordsCount.fiveLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.fiveLetters.wordsFound
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                WordCounter(
+                    numberOfLetters = "6", numberOfWords = boggleUiState.wordsCount.sixLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.sixLetters.wordsFound
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                WordCounter(
+                    numberOfLetters = "7", numberOfWords = boggleUiState.wordsCount.sevenLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.sevenLetters.wordsFound
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                WordCounter(
+                    numberOfLetters = "8+", numberOfWords = boggleUiState.wordsCount.moreThanSevenLetters.wordsTotal,
+                    wordsFoundIt = boggleUiState.wordsCount.moreThanSevenLetters.wordsFound
+                )
+            }
         }
         Spacer(modifier = Modifier.height(20.dp))
         for (word in boggleUiState.wordsGuessed) {
@@ -103,6 +148,34 @@ fun BoardScreen(modifier: Modifier = Modifier) {
                 fontSize = 18.sp,
                 color = Color.Black
             )
+        }
+    }
+}
+
+@Composable
+fun WordCounter(numberOfLetters: String, numberOfWords: Int = 0, wordsFoundIt: Int = 0) {
+    if (numberOfWords != 0) {
+        val progress = wordsFoundIt/numberOfWords.toFloat()
+        val animatedProgress = animateFloatAsState(
+            targetValue = progress,
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        ).value
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text(
+                text = "$numberOfLetters letters",
+                fontSize = 14.sp
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Box(contentAlignment = Alignment.Center) {
+                Text(
+                    text = numberOfWords.toString(),
+                    fontSize = 14.sp
+                )
+                CircularProgressIndicator(progress = animatedProgress, backgroundColor = Color.LightGray)
+            }
         }
     }
 }
@@ -140,6 +213,7 @@ fun BoggleBoard(
                     } else {
                         selectedIds.value.plus(index)
                     }
+                    updateKeys(selectedIds.value.toList())
                 }
             )
         }

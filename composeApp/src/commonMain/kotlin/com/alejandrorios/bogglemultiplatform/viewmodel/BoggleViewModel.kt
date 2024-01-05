@@ -18,10 +18,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.resource
 
 class BoggleViewModel : ViewModel() {
 
-    private val boardGenerator = BoardGenerator(Language.EN)
+    private var boardGenerator = BoardGenerator(Language.ES)
 
     // Game UI state
     private val _uiState = MutableStateFlow(BoggleUiState())
@@ -45,6 +46,14 @@ class BoggleViewModel : ViewModel() {
 
     override fun onCleared() {
         httpClient.close()
+    }
+
+    fun changeLanguage(isEnglish: Boolean) {
+        boardGenerator = if (isEnglish) {
+            BoardGenerator(Language.EN)
+        } else {
+            BoardGenerator(Language.ES)
+        }
     }
 
     fun reloadBoard() {
@@ -81,24 +90,55 @@ class BoggleViewModel : ViewModel() {
             newWordsGuessed.add(_uiState.value.word)
             positionsSet.clear()
             _uiState.value = _uiState.value.copy(isAWord = false, word = "", wordsGuessed = newWordsGuessed.toList())
+            updateWordsFound()
         }
     }
 
     private fun getSolution(board: List<String>) {
         viewModelScope.launch {
-//            try {
-//                val configString = resource("en_dictionary.json").readBytes().decodeToString()
-//                println(configString)
-//                _masterModelState.update { s -> s.copy(config = Json.decodeFromString(configString)) }
-//            } catch (e: Exception) {
-//                println("exploit: $e")
-//            }
+            try {
+                val dictionary = resource("en_dictionary.txt").readBytes().decodeToString().split("\r?\n|\r".toRegex()).toList()
+                val results = boardGenerator.solveBoard(ArrayList(board), dictionary)
+                _uiState.value = _uiState.value.copy(result = results)
+                println(results)
+                getWordsByLetter()
+            } catch (e: Exception) {
+                println("exploit: $e")
+            }
 
-
-            val words = getWordsFromBoard(board)
-            _uiState.value = _uiState.value.copy(result = words)
-            println(words)
+//            val words = getWordsFromBoard(board)
+//            _uiState.value = _uiState.value.copy(result = words)
         }
+    }
+
+    private fun getWordsByLetter() {
+        val results = _uiState.value.result
+        val wordsCount = WordsCount(
+            threeLetters = WordPair(results.filter { it.length == 3 }.size, 0),
+            fourLetters = WordPair(results.filter { it.length == 4 }.size, 0),
+            fiveLetters = WordPair(results.filter { it.length == 5 }.size, 0),
+            sixLetters = WordPair(results.filter { it.length == 6 }.size, 0),
+            sevenLetters = WordPair(results.filter { it.length == 7 }.size, 0),
+            moreThanSevenLetters = WordPair(results.filter { it.length > 7 }.size, 0)
+        )
+        _uiState.value = _uiState.value.copy(wordsCount = wordsCount)
+    }
+
+    private fun updateWordsFound() {
+        val wordsGuessed = _uiState.value.wordsGuessed
+        val wordsCount = WordsCount(
+            threeLetters = _uiState.value.wordsCount.threeLetters.copy(wordsFound = wordsGuessed.filter { it.length == 3 }.size),
+            fourLetters = _uiState.value.wordsCount.fourLetters.copy(wordsFound = wordsGuessed.filter { it.length == 4 }.size),
+            fiveLetters = _uiState.value.wordsCount.fiveLetters.copy(wordsFound = wordsGuessed.filter { it.length == 5 }.size),
+            sixLetters = _uiState.value.wordsCount.sixLetters.copy(wordsFound = wordsGuessed.filter { it.length == 6 }.size),
+            sevenLetters = _uiState.value.wordsCount.sevenLetters.copy(wordsFound = wordsGuessed.filter { it.length == 7 }.size),
+            moreThanSevenLetters = _uiState.value.wordsCount.moreThanSevenLetters.copy(wordsFound = wordsGuessed.filter {
+                it
+                    .length > 7
+            }.size)
+        )
+
+        _uiState.value = _uiState.value.copy(wordsCount = wordsCount)
     }
 
     private suspend fun getWordsFromBoard(board: List<String>): List<String> {
@@ -129,4 +169,19 @@ data class BoggleUiState(
     val boardMap: Map<Int, String> = emptyMap(),
     val isAWord: Boolean = false,
     val word: String = "",
+    val wordsCount: WordsCount = WordsCount()
+)
+
+data class WordsCount(
+    val threeLetters: WordPair = WordPair(0, 0),
+    val fourLetters: WordPair = WordPair(0, 0),
+    val fiveLetters: WordPair = WordPair(0, 0),
+    val sixLetters: WordPair = WordPair(0, 0),
+    val sevenLetters: WordPair = WordPair(0, 0),
+    val moreThanSevenLetters: WordPair = WordPair(0, 0)
+)
+
+data class WordPair(
+    val wordsTotal: Int,
+    val wordsFound: Int
 )
