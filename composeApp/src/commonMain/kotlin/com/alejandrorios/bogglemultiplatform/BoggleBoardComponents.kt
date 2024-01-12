@@ -52,7 +52,7 @@ fun BoggleDie(letter: String, selected: Boolean, isAWord: Boolean = false, modif
         ) {
             Text(
                 text = letter,
-                fontSize = 38.sp,
+                fontSize = if(letter == "Qu") 32.sp else 38.sp,
                 color = getLetterColor(selected, isAWord),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

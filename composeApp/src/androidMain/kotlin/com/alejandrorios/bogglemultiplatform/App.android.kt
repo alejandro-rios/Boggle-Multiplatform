@@ -35,7 +35,7 @@ internal actual val isAndroid: Boolean
 @Preview(showBackground = true)
 @Composable
 fun NormalDie() {
-    BoggleDie(letter = "B", selected = false, modifier = Modifier.padding(10.dp))
+    BoggleDie(letter = "Qu", selected = false, modifier = Modifier.padding(10.dp))
 }
 
 @Preview(showBackground = true)

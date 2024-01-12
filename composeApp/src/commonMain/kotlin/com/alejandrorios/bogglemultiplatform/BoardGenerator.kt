@@ -8,13 +8,6 @@ import kotlin.random.Random
 
 enum class Language { EN, ES}
 
-//object BoardGeneratorFreezer {
-//    fun board(language: Language) : BoardGenerator {
-//        val board = BoardGenerator(language)
-//        return board
-//    }
-//}
-
 data class BoardGenerator(private val language: Language) {
     fun generateBoard(): ArrayList<String> {
         val dice = (1..16).shuffled()

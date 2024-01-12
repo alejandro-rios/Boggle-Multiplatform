@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,11 +20,19 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Checkbox
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ProgressIndicatorDefaults
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -32,14 +41,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.round
@@ -47,115 +57,195 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toIntRect
 import com.alejandrorios.bogglemultiplatform.theme.md_theme_light_primary
 import com.alejandrorios.bogglemultiplatform.viewmodel.BoggleViewModel
+import com.alejandrorios.bogglemultiplatform.viewmodel.WordPair
 import dev.icerock.moko.mvvm.compose.getViewModel
 import dev.icerock.moko.mvvm.compose.viewModelFactory
+import kotlinx.coroutines.launch
 
 @Composable
 fun BoardScreen(modifier: Modifier = Modifier) {
-    var tileSize by remember { mutableStateOf(0) }
     val boggleViewModel = getViewModel(Unit, viewModelFactory { BoggleViewModel() })
     val boggleUiState by boggleViewModel.uiState.collectAsState()
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
     val checkedState = remember { mutableStateOf(true) }
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text = " ${boggleUiState.wordsGuessed.size} / ${boggleUiState.result.size} Words",
-                fontSize = 24.sp
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            BoggleBoard(
-                board = boggleViewModel.board,
-                modifier = Modifier
-                    .size(350.dp)
-                    .onGloballyPositioned {
-                        tileSize = (it.size.width - 30) / 4
-                    }
-                    .background(
-                        color = Color(0xFF1F4E78),
-                        shape = RoundedCornerShape(28.dp)
-                    ),
-                isAWord = boggleUiState.isAWord,
-                onDragEnded = { boggleViewModel.addWord() },
-                updateKeys = { values ->
-                    boggleViewModel.evaluateWord(values)
+    if (boggleUiState.isFinish) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = {
+                Button(onClick = { boggleViewModel.closeDialog() }) {
+                    Text("OK")
                 }
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-//            Switch(
-//                checked = checkedState.value,
-//                onCheckedChange = { checkedState.value = it }
-//            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                onClick = {
-                    boggleViewModel.reloadBoard()
-                },
-                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
-            ) {
-                Text(
-                    text = "Reload",
-                    fontSize = 20.sp,
-                    color = Color.White
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(modifier = Modifier.padding(horizontal = 16.dp)) {
-                WordCounter(
-                    numberOfLetters = "3", numberOfWords = boggleUiState.wordsCount.threeLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.threeLetters.wordsFound
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                WordCounter(
-                    numberOfLetters = "4", numberOfWords = boggleUiState.wordsCount.fourLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.fourLetters.wordsFound
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                WordCounter(
-                    numberOfLetters = "5", numberOfWords = boggleUiState.wordsCount.fiveLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.fiveLetters.wordsFound
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                WordCounter(
-                    numberOfLetters = "6", numberOfWords = boggleUiState.wordsCount.sixLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.sixLetters.wordsFound
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                WordCounter(
-                    numberOfLetters = "7", numberOfWords = boggleUiState.wordsCount.sevenLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.sevenLetters.wordsFound
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                WordCounter(
-                    numberOfLetters = "8+", numberOfWords = boggleUiState.wordsCount.moreThanSevenLetters.wordsTotal,
-                    wordsFoundIt = boggleUiState.wordsCount.moreThanSevenLetters.wordsFound
-                )
-            }
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        for (word in boggleUiState.wordsGuessed) {
-            Text(
-                modifier = Modifier.padding(vertical = 10.dp, horizontal = 16.dp),
-                text = word,
-                textAlign = TextAlign.Start,
-                fontSize = 18.sp,
-                color = Color.Black
-            )
-        }
+            },
+            title = { Text("Success") },
+            text = { Text("You finished the game!") },
+        )
     }
+
+    if (boggleUiState.definition != null) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = {
+                Button(onClick = { boggleViewModel.closeDefinitionDialog() }) {
+                    Text("OK")
+                }
+            },
+            title = { Text("Definition") },
+            text = { Text("${boggleUiState.definition?.word}: ${boggleUiState.definition?.meanings?.first()?.definitions?.first()
+                ?.definition}") },
+        )
+    }
+
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState)
+        },
+        content = { innerPadding ->
+            if (boggleUiState.isLoading) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.width(64.dp))
+                }
+            } else {
+                Column(
+                    modifier = modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row {
+                            Text(
+                                text = " ${boggleUiState.wordsGuessed.size} / ${boggleUiState.result.size} Words",
+                                fontSize = 24.sp
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Text(
+                                text = "Score: ${boggleUiState.score}",
+                                fontSize = 24.sp
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        BoggleBoard(
+                            board = boggleViewModel.board,
+                            modifier = Modifier
+                                .size(350.dp)
+                                .background(
+                                    color = Color(0xFF1F4E78),
+                                    shape = RoundedCornerShape(16.dp)
+                                ),
+                            isAWord = boggleUiState.isAWord,
+                            onDragEnded = { boggleViewModel.addWord() },
+                            updateKeys = { values ->
+                                boggleViewModel.evaluateWord(values)
+                            }
+                        )
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                modifier = Modifier.size(20.dp),
+                                checked = boggleUiState.useAPI,
+                                onCheckedChange = { isChecked -> boggleViewModel.useAPI(isChecked) }
+                            )
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(text = "Use API solver", fontSize = 24.sp)
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Switch(
+                                checked = checkedState.value,
+                                enabled = !boggleUiState.useAPI,
+                                onCheckedChange = {
+                                    checkedState.value = it
+                                    boggleViewModel.changeLanguage(it)
+                                }
+                            )
+                            Text(text = "English", fontSize = 24.sp)
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Button(
+                            onClick = {
+                                boggleViewModel.reloadBoard()
+                            },
+                            contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
+                        ) {
+                            Text(
+                                text = "New game",
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Button(
+                            onClick = {
+
+                                scope.launch {
+                                    val hint = boggleViewModel.getHint()
+                                    snackBarHostState.showSnackbar("Try with: $hint")
+                                }
+                            },
+                            contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
+                        ) {
+                            Text(
+                                text = "Give me a hint",
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Row(
+                            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            WordCounter(
+                                numberOfLetters = "3",
+                                wordPair = boggleUiState.wordsCount.threeLetters,
+                                viewModel = boggleViewModel,
+                            )
+                            WordCounter(
+                                numberOfLetters = "4",
+                                wordPair = boggleUiState.wordsCount.fourLetters,
+                                viewModel = boggleViewModel,
+                            )
+                            WordCounter(
+                                numberOfLetters = "5",
+                                wordPair = boggleUiState.wordsCount.fiveLetters,
+                                viewModel = boggleViewModel,
+                            )
+                            WordCounter(
+                                numberOfLetters = "6",
+                                wordPair = boggleUiState.wordsCount.sixLetters,
+                                viewModel = boggleViewModel,
+                            )
+                            WordCounter(
+                                numberOfLetters = "7",
+                                wordPair = boggleUiState.wordsCount.sevenLetters,
+                                viewModel = boggleViewModel,
+                            )
+                            WordCounter(
+                                numberOfLetters = "8+",
+                                wordPair = boggleUiState.wordsCount.moreThanSevenLetters,
+                                viewModel = boggleViewModel,
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
+        }
+    )
 }
 
 @Composable
-fun WordCounter(numberOfLetters: String, numberOfWords: Int = 0, wordsFoundIt: Int = 0) {
-    if (numberOfWords != 0) {
-        val progress = wordsFoundIt/numberOfWords.toFloat()
+fun WordCounter(numberOfLetters: String, wordPair: WordPair, viewModel: BoggleViewModel) {
+    if (wordPair.wordsTotal != 0) {
+        val progress = wordPair.wordsFound.size / wordPair.wordsTotal.toFloat()
         val animatedProgress = animateFloatAsState(
             targetValue = progress,
             animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
@@ -171,10 +261,24 @@ fun WordCounter(numberOfLetters: String, numberOfWords: Int = 0, wordsFoundIt: I
             Spacer(modifier = Modifier.height(10.dp))
             Box(contentAlignment = Alignment.Center) {
                 Text(
-                    text = numberOfWords.toString(),
+                    text = wordPair.wordsTotal.toString(),
                     fontSize = 14.sp
                 )
-                CircularProgressIndicator(progress = animatedProgress, backgroundColor = Color.LightGray)
+                CircularProgressIndicator(progress = animatedProgress, strokeWidth = 6.dp, backgroundColor = Color.LightGray)
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            for (word in wordPair.wordsFound) {
+                ClickableText(
+                    text = AnnotatedString(word),
+                    style = TextStyle(
+                        textAlign = TextAlign.Start,
+                        fontSize = 13.sp,
+                        color = Color.Black
+                    ),
+                    onClick = {
+                        viewModel.getWordDefinition(word)
+                    }
+                )
             }
         }
     }
@@ -196,7 +300,7 @@ fun BoggleBoard(
         columns = GridCells.Fixed(4),
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalArrangement = Arrangement.spacedBy(18.dp),
-        contentPadding = PaddingValues(18.dp),
+        contentPadding = PaddingValues(10.dp),
         modifier = modifier.photoGridDragHandler(state, selectedIds, onDragEnded, updateKeys),
         userScrollEnabled = false
     ) {
