@@ -1,4 +1,9 @@
 package com.alejandrorios.bogglemultiplatform
 
-internal actual val isAndroid: Boolean
-    get() = false
+import com.alejandrorios.bogglemultiplatform.models.BoggleUiState
+import io.github.xxfast.kstore.KStore
+import io.github.xxfast.kstore.storage.storeOf
+
+actual val store: KStore<BoggleUiState> by lazy {
+    storeOf("saved", BoggleUiState())
+}

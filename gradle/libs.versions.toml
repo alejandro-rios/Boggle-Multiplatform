@@ -10,6 +10,8 @@ moko-mvvm = "0.16.1"
 kotlinx-coroutines = "1.7.3"
 ktor = "2.3.7"
 kotlinx-serialization = "1.6.2"
+kstore = "0.7.1"
+harawata-appdirs = "1.2.1"
 
 [libraries]
 
@@ -30,6 +32,10 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kstore = { module = "io.github.xxfast:kstore", version.ref = "kstore" }
+kstore-file = { module = "io.github.xxfast:kstore-file", version.ref = "kstore" }
+kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "kstore" }
+harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
 
 [plugins]
 

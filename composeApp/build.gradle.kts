@@ -53,6 +53,8 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.animation)
+            implementation(compose.animationGraphics)
             implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
@@ -65,6 +67,7 @@ kotlin {
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kstore)
 
         }
 
@@ -74,6 +77,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.android)
             implementation(libs.compose.uitooling)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.kstore.file)
         }
 
         desktopMain.dependencies {
@@ -81,15 +85,19 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(libs.ktor.client.java)
+            implementation(libs.kstore.file)
+            implementation(libs.harawata.appdirs)
         }
 
         jsMain.dependencies {
             implementation(compose.html.core)
             implementation(libs.ktor.client.js)
+            implementation(libs.kstore.storage)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(libs.kstore.file)
         }
     }
 }
