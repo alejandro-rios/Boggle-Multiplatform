@@ -32,6 +32,13 @@ now, here's some details of the game:
 - Word definitions are obtained from the [Free Dictionary API](https://dictionaryapi.dev/)
 - Huge thanks to [Andres Rojas](https://andresrojas.dev/) for helping me with the initial steps of the project.
 
+
+## 📽️ Showcase
+### Android
+
+https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/302210cf-a685-477f-b7a7-6c790322dc8c
+
+
 ## 📚 Tech stack
 - [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform): Declarative framework for sharing UIs across multiple platforms.
 - [Ktor](https://github.com/ktorio/ktor): A framework for building asynchronous server-side and client-side applications with ease.
