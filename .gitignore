@@ -10,6 +10,7 @@ captures
 .cxx
 local.properties
 xcuserdata/
-Pods/
+iosApp/Pods/
 *.jks
 *yarn.lock
+/keys/

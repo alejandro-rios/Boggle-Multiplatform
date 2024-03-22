@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform.theme
+package com.alejandrorios.bogglemultiplatform.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape

@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform.solver
+package com.alejandrorios.bogglemultiplatform.data.solver
 
 /**
  * Recursively search the entire board for words that appear in the dictionary.

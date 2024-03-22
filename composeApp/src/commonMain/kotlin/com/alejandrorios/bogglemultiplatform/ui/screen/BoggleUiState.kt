@@ -1,5 +1,7 @@
-package com.alejandrorios.bogglemultiplatform.models
+package com.alejandrorios.bogglemultiplatform.ui.screen
 
+import com.alejandrorios.bogglemultiplatform.data.models.DictionaryResponse
+import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import kotlinx.serialization.Serializable
 
 @Serializable

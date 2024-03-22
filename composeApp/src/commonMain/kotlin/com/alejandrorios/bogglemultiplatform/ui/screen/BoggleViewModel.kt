@@ -1,12 +1,11 @@
-package com.alejandrorios.bogglemultiplatform.viewmodel
+package com.alejandrorios.bogglemultiplatform.ui.screen
 
 import androidx.compose.runtime.mutableStateListOf
-import com.alejandrorios.bogglemultiplatform.BoardGenerator
-import com.alejandrorios.bogglemultiplatform.Language
-import com.alejandrorios.bogglemultiplatform.models.BoggleUiState
-import com.alejandrorios.bogglemultiplatform.models.DictionaryResponse
-import com.alejandrorios.bogglemultiplatform.models.WordPair
-import com.alejandrorios.bogglemultiplatform.models.WordsCount
+import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
+import com.alejandrorios.bogglemultiplatform.data.Language
+import com.alejandrorios.bogglemultiplatform.data.models.DictionaryResponse
+import com.alejandrorios.bogglemultiplatform.data.models.WordPair
+import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.xxfast.kstore.KStore
 import io.ktor.client.HttpClient
@@ -19,6 +18,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.resource
 @OptIn(ExperimentalSerializationApi::class)
 class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewModel() {
     private var boardGenerator = BoardGenerator(Language.EN)
-    private var boardDictionary = "en_dictionary.txt"
+    private var boardDictionary = "files/en_dictionary.txt"
 
     // Game UI state
     private val _uiState = MutableStateFlow(BoggleUiState())
@@ -49,16 +49,18 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             val boggleGameState: BoggleUiState? = boggleStore.get()
 
             if (boggleGameState != null && boggleGameState.result.isNotEmpty()) {
-                _uiState.value = _uiState.value.copy(
-                    words = boggleGameState.words,
-                    wordsGuessed = boggleGameState.wordsGuessed,
-                    result = boggleGameState.result,
-                    board = boggleGameState.board,
-                    boardMap = boggleGameState.boardMap,
-                    wordsCount = boggleGameState.wordsCount,
-                    score = boggleGameState.score,
-                    isLoading = false,
-                )
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        words = boggleGameState.words,
+                        wordsGuessed = boggleGameState.wordsGuessed,
+                        result = boggleGameState.result,
+                        board = boggleGameState.board,
+                        boardMap = boggleGameState.boardMap,
+                        wordsCount = boggleGameState.wordsCount,
+                        score = boggleGameState.score,
+                        isLoading = false,
+                    )
+                }
             } else {
                 reloadBoard()
             }
@@ -71,10 +73,10 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
 
     fun changeLanguage(isEnglish: Boolean) {
         boardGenerator = if (isEnglish) {
-            boardDictionary = "en_dictionary.txt"
+            boardDictionary = "files/en_dictionary.txt"
             BoardGenerator(Language.EN)
         } else {
-            boardDictionary = "es_dictionary.txt"
+            boardDictionary = "files/es_dictionary.txt"
             BoardGenerator(Language.ES)
         }
     }
@@ -90,7 +92,11 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             board.forEachIndexed { index, letter ->
                 boardMap[index] = letter
             }
-            _uiState.value = _uiState.value.copy(boardMap = boardMap, board = board, useAPI = useAPI, isLoading = true)
+
+            _uiState.update { currentState ->
+                currentState.copy(boardMap = boardMap, board = board, useAPI = useAPI, isLoading = true)
+            }
+
             getSolution(board.toList())
         }
     }
@@ -105,9 +111,13 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
         }
 
         if (_uiState.value.result.contains(wordToEvaluate.lowercase()) && !_uiState.value.wordsGuessed.contains(wordToEvaluate)) {
-            _uiState.value = _uiState.value.copy(isAWord = true, word = wordToEvaluate)
+            _uiState.update { currentState ->
+                currentState.copy(isAWord = true, word = wordToEvaluate)
+            }
         } else {
-            _uiState.value = _uiState.value.copy(isAWord = false, word = "")
+            _uiState.update { currentState ->
+                currentState.copy(isAWord = false, word = "")
+            }
         }
     }
 
@@ -116,7 +126,11 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             val newWordsGuessed: MutableList<String> = _uiState.value.wordsGuessed.toMutableList()
             newWordsGuessed.add(_uiState.value.word)
             positionsSet.clear()
-            _uiState.value = _uiState.value.copy(isAWord = false, word = "", wordsGuessed = newWordsGuessed.toList())
+
+            _uiState.update { currentState ->
+                currentState.copy(isAWord = false, word = "", wordsGuessed = newWordsGuessed.toList())
+            }
+
             updateWordsFound()
         }
     }
@@ -127,13 +141,20 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
                 val words = getWordsFromAPI(board).map {
                     it.lowercase()
                 }
-                _uiState.value = _uiState.value.copy(result = words)
+
+                _uiState.update { currentState ->
+                    currentState.copy(result = words)
+                }
+
                 getWordsByLetter()
             } else {
                 try {
                     val words = getWordsFromLocal(board)
 
-                    _uiState.value = _uiState.value.copy(result = words)
+                    _uiState.update { currentState ->
+                        currentState.copy(result = words)
+                    }
+
                     getWordsByLetter()
                 } catch (e: Exception) {
                     println("exploit: $e")
@@ -152,7 +173,11 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             sevenLetters = WordPair(results.filter { it.length == 7 }.size, emptyList()),
             moreThanSevenLetters = WordPair(results.filter { it.length > 7 }.size, emptyList())
         )
-        _uiState.value = _uiState.value.copy(wordsCount = wordsCount, isLoading = false)
+
+        _uiState.update { currentState ->
+            currentState.copy(wordsCount = wordsCount, isLoading = false)
+        }
+
     }
 
     private fun updateWordsFound() {
@@ -172,11 +197,13 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             .fiveLetters.wordsFound.size * 2) + (wordsCount.sixLetters.wordsFound.size * 3) + (wordsCount.sevenLetters
             .wordsFound.size * 5) + (wordsCount.moreThanSevenLetters.wordsFound.size * 11)
 
-        _uiState.value = _uiState.value.copy(
-            wordsCount = wordsCount,
-            score = score,
-            isFinish = _uiState.value.wordsGuessed.size == _uiState.value.result.size,
-        )
+        _uiState.update { currentState ->
+            currentState.copy(
+                wordsCount = wordsCount,
+                score = score,
+                isFinish = _uiState.value.wordsGuessed.size == _uiState.value.result.size,
+            )
+        }
 
         viewModelScope.launch {
             boggleStore.set(_uiState.value)
@@ -196,30 +223,40 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             .body()
         return Json.decodeFromString(response)
     }
-
+// TODO: Use when 1.6.0 has viewmodel support
+//    @OptIn(InternalResourceApi::class)
     private suspend fun getWordsFromLocal(board: List<String>): List<String> {
+//    val dictionary = readResourceBytes(boardDictionary).decodeToString().split("\r?\n|\r".toRegex()).toList()
         val dictionary = resource(boardDictionary).readBytes().decodeToString().split("\r?\n|\r".toRegex()).toList()
 
-        return boardGenerator.solveBoard(ArrayList(board), dictionary)
+        return boardGenerator.getBoardSolution(ArrayList(board), dictionary)
     }
 
     fun closeDialog() {
-        _uiState.value = _uiState.value.copy(isFinish = false)
+        _uiState.update { currentState ->
+            currentState.copy(isFinish = false)
+        }
     }
 
     fun closeDefinitionDialog() {
-        _uiState.value = _uiState.value.copy(definition = null)
+        _uiState.update { currentState ->
+            currentState.copy(definition = null)
+        }
     }
 
     fun useAPI(useAPI: Boolean) {
-        _uiState.value = _uiState.value.copy(useAPI = useAPI)
+        _uiState.update { currentState ->
+            currentState.copy(useAPI = useAPI)
+        }
     }
 
     fun getWordDefinition(word: String) {
         viewModelScope.launch {
             val definition = searchWord(word)
 
-            _uiState.value = _uiState.value.copy(definition = definition?.get(0))
+            _uiState.update { currentState ->
+                currentState.copy(definition = definition?.get(0))
+            }
         }
     }
 

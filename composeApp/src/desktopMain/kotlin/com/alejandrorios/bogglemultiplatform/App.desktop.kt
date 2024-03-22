@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.alejandrorios.bogglemultiplatform.models.BoggleUiState
+import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
+import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleScreen
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
 import okio.Path.Companion.toPath
@@ -18,9 +19,12 @@ actual val store: KStore<BoggleUiState> by lazy {
 @Preview
 @Composable
 fun DefaultPreview() {
-    BoardScreen(
+    BoggleScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
     )
 }
+
+actual val isAndroid: Boolean
+    get() = false

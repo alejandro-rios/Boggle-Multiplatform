@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform.solver
+package com.alejandrorios.bogglemultiplatform.data.solver
 
 /**
  * Simple Trie class.  Logic to build the Trie lives outside of the class, but in this file.

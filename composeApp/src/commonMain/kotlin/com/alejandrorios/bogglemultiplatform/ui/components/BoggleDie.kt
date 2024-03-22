@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform
+package com.alejandrorios.bogglemultiplatform.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -17,9 +17,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alejandrorios.bogglemultiplatform.utils.Preview
 
 @Composable
-fun BoggleDie(letter: String, selected: Boolean, isAWord: Boolean = false, modifier: Modifier) {
+fun BoggleDie(
+    letter: String,
+    selected: Boolean,
+    isAWord: Boolean = false,
+    modifier: Modifier = Modifier,
+) {
 
     Card(
         modifier = modifier,
@@ -78,4 +84,10 @@ fun getLetterColor(selected: Boolean, isAWord: Boolean): Color = if (selected &&
     Color.White
 } else {
     Color.Black
+}
+
+@Preview
+@Composable
+fun BoggleDiePreview() {
+    BoggleDie(letter = "E", selected = false, isAWord = false, modifier = Modifier.padding(10.dp))
 }

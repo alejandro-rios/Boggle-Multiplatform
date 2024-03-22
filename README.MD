@@ -1,27 +1,48 @@
-# Compose Multiplatform Application
+# Boggle Multiplatform
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
-## Before running!
- - check your system with [KDoctor](https://github.com/Kotlin/kdoctor)
- - install JDK 8 on your machine
- - add `local.properties` file to the project root and set a path to Android SDK there
- - run `./gradlew podInstall` in the project root
+![badge-android](http://img.shields.io/badge/platform-android-3DDC84.svg?style=flat)
+![badge-ios](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
+![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
+![badge-browser](https://img.shields.io/badge/platform-js-F0DB4F.svg?style=flat)
 
-### Android
-To run the application on android device/emulator:  
- - open project in Android Studio and run imported android run configuration
+A simple Boggle game inspired on this [site](https://wordshake.com/boggle), the App is implemented with Kotlin and Compose Multiplatform, 
+have fun searching words in a 4x4 board of letters, the idea behind this App is to explore and play with [KMP](https://kotlinlang.org/docs/multiplatform.html) and [CMP](https://www.jetbrains.com/lp/compose-multiplatform/).
 
-To build the application bundle:
- - run `./gradlew :composeApp:assembleDebug`
- - find `.apk` file in `composeApp/build/outputs/apk/debug/composeApp-debug.apk`
+## 🎲 Game mechanics
+You will play with a 4x4 board looking for words with minimum `3 letters`, each word guessed will give you points 
+that you'll see in the `Score` value, the game is finished when you find the total words available for the board, 
+now, here's some details of the game:
 
-### Desktop
-Run the desktop application: `./gradlew :composeApp:run`
+- There's a `Score` marker next to a `Words found/ Total words` counter.
+- A Boggle board with a progress line around it (it works but needs to be improved 😅)
+- An `Use API solver`: this option let's you choose either to solve the board with the local or the API solver, the 
+  main difference is that the local solver will find less words than the API, is checked by default.
+- `English` toggle: you can play looking for words on English or Spanish, by default the board is on English, to 
+  change for a Spanish board you'll need to first uncheck the `Use API solver` checkbox.
+- The `Rotate` button will rotate the board so it might help you to see new words.
+- The `New game` button will start a new game.
+- The `Give me a hint` button will help you with a word if you can't think on one.
+- There's a `Words counter` section from which you'll see the the number of words available per number of letters.
+- You can click on each word guessed to see it's definition.
 
-### iOS
-To run the application on iPhone device/simulator:
- - Open `iosApp/iosApp.xcworkspace` in Xcode and run standard configuration
- - Or use [Kotlin Multiplatform Mobile plugin](https://plugins.jetbrains.com/plugin/14936-kotlin-multiplatform-mobile) for Android Studio
+## 📢 Important mentions
+- Local solver was implemented and adjusted based on [Ryan Grasell's repo](https://github.com/rgrasell/BoggleSolver/)
+- API solver url is from [Codebox Boggle solver](https://codebox.net/pages/boggle-game-solver-and-web-service)
+- Word definitions are obtained from the [Free Dictionary API](https://dictionaryapi.dev/)
+- Huge thanks to [Andres Rojas](https://andresrojas.dev/) for helping me with the initial steps of the project.
 
-### Browser
-Run the browser application: `./gradlew :composeApp:jsBrowserDevelopmentRun`
+## 📚 Tech stack
+- [Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform): Declarative framework for sharing UIs across multiple platforms.
+- [Ktor](https://github.com/ktorio/ktor): A framework for building asynchronous server-side and client-side applications with ease.
+- [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines): Simple library used to run Asynchronous or non-blocking calls.
+- [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization): Simple library used to serialize data.
+- [KStore](https://github.com/xxfast/KStore): A tiny Kotlin multiplatform library that assists in saving and restoring objects.
+- [Moko-MVVM](https://github.com/icerockdev/moko-mvvm): Model-View-ViewModel architecture components for mobile (android & ios) Kotlin Multiplatform development.
 
+## ⚙️ Architecture
+The architecture used for the application consists on a mix of MVVM and MVI patterns, This project uses a basic UiState(`BoggleUiState`) to handle the application interface state at a given moment.
+
+## 📓 Notes and considerations
+This project is not finished, there's a lot of improvements that can be made, and I'm pretty sure that the app has 
+some performance issues (on the Compose side) that are going to be fixed.

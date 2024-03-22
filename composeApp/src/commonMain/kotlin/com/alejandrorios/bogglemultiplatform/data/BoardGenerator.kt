@@ -1,8 +1,8 @@
-package com.alejandrorios.bogglemultiplatform
+package com.alejandrorios.bogglemultiplatform.data
 
-import com.alejandrorios.bogglemultiplatform.solver.buildTrie
-import com.alejandrorios.bogglemultiplatform.solver.parseSquareBoard
-import com.alejandrorios.bogglemultiplatform.solver.solveBoard
+import com.alejandrorios.bogglemultiplatform.data.solver.buildTrie
+import com.alejandrorios.bogglemultiplatform.data.solver.parseSquareBoard
+import com.alejandrorios.bogglemultiplatform.data.solver.solveBoard
 import com.alejandrorios.bogglemultiplatform.utils.Boards4x4
 import kotlin.random.Random
 
@@ -30,7 +30,7 @@ data class BoardGenerator(private val language: Language) {
         return ArrayList(board)
     }
 
-    fun solveBoard(board: ArrayList<String>, dictionary: List<String>): List<String> {
+    fun getBoardSolution(board: ArrayList<String>, dictionary: List<String>): List<String> {
         val trie = buildTrie(dictionary.asSequence())
         val s = board.joinToString("").lowercase()
         val tiles = parseSquareBoard(s)

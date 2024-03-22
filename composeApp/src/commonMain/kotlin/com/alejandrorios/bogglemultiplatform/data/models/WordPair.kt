@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform.models
+package com.alejandrorios.bogglemultiplatform.data.models
 
 import kotlinx.serialization.Serializable
 
