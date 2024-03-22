@@ -18,5 +18,6 @@ data class BoggleUiState(
     val isFinish: Boolean = false,
     val isLoading: Boolean = false,
     val useAPI: Boolean = true,
+    val isEnglish: Boolean = true,
     val definition: DictionaryResponse? = null
 )

@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.resource
 @OptIn(ExperimentalSerializationApi::class)
 class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewModel() {
     private var boardGenerator = BoardGenerator(Language.EN)
-    private var boardDictionary = "files/en_dictionary.txt"
+    private var boardDictionary = "en_dictionary.txt"
 
     // Game UI state
     private val _uiState = MutableStateFlow(BoggleUiState())
@@ -58,6 +58,8 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
                         boardMap = boggleGameState.boardMap,
                         wordsCount = boggleGameState.wordsCount,
                         score = boggleGameState.score,
+                        useAPI = boggleGameState.useAPI,
+                        isEnglish = boggleGameState.isEnglish,
                         isLoading = false,
                     )
                 }
@@ -73,11 +75,15 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
 
     fun changeLanguage(isEnglish: Boolean) {
         boardGenerator = if (isEnglish) {
-            boardDictionary = "files/en_dictionary.txt"
+            boardDictionary = "en_dictionary.txt"
             BoardGenerator(Language.EN)
         } else {
-            boardDictionary = "files/es_dictionary.txt"
+            boardDictionary = "es_dictionary.txt"
             BoardGenerator(Language.ES)
+        }
+
+        _uiState.update { currentState ->
+            currentState.copy(isEnglish = isEnglish)
         }
     }
 
@@ -85,6 +91,7 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
         viewModelScope.launch {
             val boardMap: MutableMap<Int, String> = mutableMapOf()
             val useAPI = _uiState.value.useAPI
+            val isEnglish = _uiState.value.isEnglish
             boggleStore.delete()
             _uiState.value = BoggleUiState(words = emptyList())
             board.clear()
@@ -94,7 +101,7 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
             }
 
             _uiState.update { currentState ->
-                currentState.copy(boardMap = boardMap, board = board, useAPI = useAPI, isLoading = true)
+                currentState.copy(boardMap = boardMap, board = board, useAPI = useAPI, isEnglish = isEnglish, isLoading = true)
             }
 
             getSolution(board.toList())
