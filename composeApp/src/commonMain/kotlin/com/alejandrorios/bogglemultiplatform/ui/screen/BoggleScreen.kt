@@ -49,7 +49,6 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
     val boggleUiState by boggleViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-    val checkedState = remember { mutableStateOf(true) }
     val onRotateTriggered = remember { mutableStateOf(false) }
 
     if (boggleUiState.isFinish) {
@@ -144,12 +143,9 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                         VerticalSpacer()
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Switch(
-                                checked = checkedState.value,
+                                checked = boggleUiState.isEnglish,
                                 enabled = !boggleUiState.useAPI,
-                                onCheckedChange = {
-                                    checkedState.value = it
-                                    boggleViewModel.changeLanguage(it)
-                                }
+                                onCheckedChange = boggleViewModel::changeLanguage
                             )
                             Text(text = "English", fontSize = 24.sp)
                             HorizontalSpacer()
