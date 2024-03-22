@@ -36,7 +36,22 @@ now, here's some details of the game:
 ## 📽️ Showcase
 ### Android
 
-https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/302210cf-a685-477f-b7a7-6c790322dc8c
+https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/8bed288b-3a23-44db-915a-bb56a71e4232
+
+
+### iOS
+
+https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/fb97fa43-0c40-4107-96fb-577f89984a42
+
+
+### Desktop
+
+https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/e3fb9226-3e85-4d3b-800a-02c3d2b059fb
+
+
+### Web
+
+https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/77167768-94ba-4dc7-96a5-a1e21d265908
 
 
 ## 📚 Tech stack
