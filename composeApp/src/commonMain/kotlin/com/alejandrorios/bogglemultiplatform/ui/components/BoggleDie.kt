@@ -17,7 +17,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alejandrorios.bogglemultiplatform.utils.Preview
 
 @Composable
 fun BoggleDie(
@@ -86,7 +85,7 @@ fun getLetterColor(selected: Boolean, isAWord: Boolean): Color = if (selected &&
     Color.Black
 }
 
-@Preview
+//@Preview
 @Composable
 fun BoggleDiePreview() {
     BoggleDie(letter = "E", selected = false, isAWord = false, modifier = Modifier.padding(10.dp))

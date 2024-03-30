@@ -58,12 +58,13 @@ kotlin {
             implementation(compose.material)
             implementation(compose.material3)
             implementation(compose.ui)
-            @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            api(libs.moko.mvvm.core)
-            api(libs.moko.mvvm.compose)
+            implementation(libs.moko.mvvm.compose)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.core)
+            implementation(libs.ktor.client.logging)
             implementation(libs.ktor.content.negotiation)
             implementation(libs.ktor.serialization.json)
             implementation(libs.kotlinx.serialization.json)
@@ -116,7 +117,6 @@ android {
     }
     sourceSets["main"].apply {
         manifest.srcFile("src/androidMain/AndroidManifest.xml")
-        resources.srcDirs("src/commonMain/resources")
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -33,19 +33,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alejandrorios.bogglemultiplatform.store
+import boggle_multiplatform.composeapp.generated.resources.Res
+import boggle_multiplatform.composeapp.generated.resources.label_definition
+import boggle_multiplatform.composeapp.generated.resources.label_game_finished
+import boggle_multiplatform.composeapp.generated.resources.label_hint
+import boggle_multiplatform.composeapp.generated.resources.label_ok
+import boggle_multiplatform.composeapp.generated.resources.label_success
+import boggle_multiplatform.composeapp.generated.resources.language
+import boggle_multiplatform.composeapp.generated.resources.new_game
+import boggle_multiplatform.composeapp.generated.resources.rotate
+import boggle_multiplatform.composeapp.generated.resources.score
+import boggle_multiplatform.composeapp.generated.resources.use_api
 import com.alejandrorios.bogglemultiplatform.ui.components.BoggleBoard
 import com.alejandrorios.bogglemultiplatform.ui.components.HorizontalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.VerticalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.WordCounter
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_primary
-import dev.icerock.moko.mvvm.compose.getViewModel
-import dev.icerock.moko.mvvm.compose.viewModelFactory
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 
 @Composable
-fun BoggleScreen(modifier: Modifier = Modifier) {
-    val boggleViewModel = getViewModel(Unit, viewModelFactory { BoggleViewModel(store) })
+fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel = koinInject() ) {
     val boggleUiState by boggleViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -56,11 +65,11 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
             onDismissRequest = { },
             confirmButton = {
                 Button(onClick = boggleViewModel::closeDialog) {
-                    Text("OK")
+                    Text(stringResource(Res.string.label_ok))
                 }
             },
-            title = { Text("Success") },
-            text = { Text("You finished the game!") },
+            title = { Text(stringResource(Res.string.label_success)) },
+            text = { Text(stringResource(Res.string.label_game_finished)) },
         )
     }
 
@@ -69,10 +78,10 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
             onDismissRequest = { },
             confirmButton = {
                 Button(onClick = boggleViewModel::closeDefinitionDialog) {
-                    Text("OK")
+                    Text(stringResource(Res.string.label_ok))
                 }
             },
-            title = { Text("Definition") },
+            title = { Text(stringResource(Res.string.label_definition)) },
             text = {
                 Text(
                     "${boggleUiState.definition?.word}: ${
@@ -112,7 +121,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                             )
                             HorizontalSpacer(width = 20.dp)
                             Text(
-                                text = "Score: ${boggleUiState.score}",
+                                text = stringResource(Res.string.score, boggleUiState.score),
                                 fontSize = 24.sp
                             )
                         }
@@ -138,7 +147,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                                 onCheckedChange = boggleViewModel::useAPI
                             )
                             HorizontalSpacer()
-                            Text(text = "Use API solver", fontSize = 24.sp)
+                            Text(text = stringResource(Res.string.use_api), fontSize = 24.sp)
                         }
                         VerticalSpacer()
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -147,7 +156,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                                 enabled = !boggleUiState.useAPI,
                                 onCheckedChange = boggleViewModel::changeLanguage
                             )
-                            Text(text = "English", fontSize = 24.sp)
+                            Text(text = stringResource(Res.string.language), fontSize = 24.sp)
                             HorizontalSpacer()
                             Button(
                                 enabled = !onRotateTriggered.value,
@@ -157,7 +166,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
                                 ){
-                                Text(text = "Rotate", fontSize = 20.sp, color = Color.White)
+                                Text(text = stringResource(Res.string.rotate), fontSize = 20.sp, color = Color.White)
                             }
                         }
                         VerticalSpacer()
@@ -171,7 +180,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                                 colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
                             ) {
                                 Text(
-                                    text = "New game",
+                                    text = stringResource(Res.string.new_game),
                                     fontSize = 20.sp,
                                     color = Color.White
                                 )
@@ -188,7 +197,7 @@ fun BoggleScreen(modifier: Modifier = Modifier) {
                                 colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
                             ) {
                                 Text(
-                                    text = "Give me a hint",
+                                    text = stringResource(Res.string.label_hint),
                                     fontSize = 20.sp,
                                     color = Color.White
                                 )

@@ -1,5 +1,6 @@
 # Boggle Multiplatform
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.20-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Build](https://github.com/alejandro-rios/Boggle-Multiplatform/actions/workflows/build.yml/badge.svg)](https://github.com/alejandro-rios/Boggle-Multiplatform/actions/workflows/build.yml)
+[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.23-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
 ![badge-android](http://img.shields.io/badge/platform-android-3DDC84.svg?style=flat)
 ![badge-ios](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
@@ -61,6 +62,7 @@ https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/77167768-
 - [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization): Simple library used to serialize data.
 - [KStore](https://github.com/xxfast/KStore): A tiny Kotlin multiplatform library that assists in saving and restoring objects.
 - [Moko-MVVM](https://github.com/icerockdev/moko-mvvm): Model-View-ViewModel architecture components for mobile (android & ios) Kotlin Multiplatform development.
+- [Koin](https://insert-koin.io/): A smart Kotlin injection library.
 
 ## ⚙️ Architecture
 The architecture used for the application consists on a mix of MVVM and MVI patterns, This project uses a basic UiState(`BoggleUiState`) to handle the application interface state at a given moment.

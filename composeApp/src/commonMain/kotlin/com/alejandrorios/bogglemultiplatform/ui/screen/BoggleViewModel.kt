@@ -3,31 +3,23 @@ package com.alejandrorios.bogglemultiplatform.ui.screen
 import androidx.compose.runtime.mutableStateListOf
 import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
 import com.alejandrorios.bogglemultiplatform.data.Language
-import com.alejandrorios.bogglemultiplatform.data.models.DictionaryResponse
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
+import com.alejandrorios.bogglemultiplatform.data.service.BoggleService
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import io.github.xxfast.kstore.KStore
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.plugins.HttpTimeout
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.timeout
-import io.ktor.client.request.get
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.resource
+import org.jetbrains.compose.resources.InternalResourceApi
+import org.jetbrains.compose.resources.readResourceBytes
+import kotlin.collections.set
 
-@OptIn(ExperimentalSerializationApi::class)
-class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewModel() {
+class BoggleViewModel(private val service: BoggleService, private val boggleStore: KStore<BoggleUiState>) : ViewModel() {
     private var boardGenerator = BoardGenerator(Language.EN)
-    private var boardDictionary = "en_dictionary.txt"
+    private var boardDictionary = "files/en_dictionary.txt"
 
     // Game UI state
     private val _uiState = MutableStateFlow(BoggleUiState())
@@ -35,14 +27,6 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
 
     private var board = mutableStateListOf<String>()
     private var positionsSet = mutableSetOf<Int>()
-
-    @OptIn(ExperimentalSerializationApi::class)
-    private val httpClient = HttpClient {
-        install(HttpTimeout)
-        install(ContentNegotiation) {
-            json(Json { isLenient = true; ignoreUnknownKeys = true; explicitNulls = false })
-        }
-    }
 
     init {
         viewModelScope.launch {
@@ -69,16 +53,12 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
         }
     }
 
-    override fun onCleared() {
-        httpClient.close()
-    }
-
     fun changeLanguage(isEnglish: Boolean) {
         boardGenerator = if (isEnglish) {
-            boardDictionary = "en_dictionary.txt"
+            boardDictionary = "files/en_dictionary.txt"
             BoardGenerator(Language.EN)
         } else {
-            boardDictionary = "es_dictionary.txt"
+            boardDictionary = "files/es_dictionary.txt"
             BoardGenerator(Language.ES)
         }
 
@@ -145,7 +125,7 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
     private fun getSolution(board: List<String>) {
         viewModelScope.launch {
             if (_uiState.value.useAPI) {
-                val words = getWordsFromAPI(board).map {
+                val words = service.fetchWordsFromAPI(board).map {
                     it.lowercase()
                 }
 
@@ -219,22 +199,9 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
 
     fun getHint(): String = _uiState.value.result.first { word -> !_uiState.value.wordsGuessed.contains(word.uppercase()) }
 
-    private suspend fun getWordsFromAPI(board: List<String>): List<String> {
-        val response: String = httpClient
-            .get("https://api.codebox.org.uk/boggle/${board.joinToString(separator = "")}") {
-                timeout {
-                    requestTimeoutMillis = 30000
-                    connectTimeoutMillis = 30000
-                }
-            }
-            .body()
-        return Json.decodeFromString(response)
-    }
-// TODO: Use when 1.6.0 has viewmodel support
-//    @OptIn(InternalResourceApi::class)
+    @OptIn(InternalResourceApi::class)
     private suspend fun getWordsFromLocal(board: List<String>): List<String> {
-//    val dictionary = readResourceBytes(boardDictionary).decodeToString().split("\r?\n|\r".toRegex()).toList()
-        val dictionary = resource(boardDictionary).readBytes().decodeToString().split("\r?\n|\r".toRegex()).toList()
+        val dictionary = readResourceBytes(boardDictionary).decodeToString().split("\r?\n|\r".toRegex()).toList()
 
         return boardGenerator.getBoardSolution(ArrayList(board), dictionary)
     }
@@ -259,22 +226,11 @@ class BoggleViewModel(private val boggleStore: KStore<BoggleUiState>) : ViewMode
 
     fun getWordDefinition(word: String) {
         viewModelScope.launch {
-            val definition = searchWord(word)
+            val definition = service.getDefinition(word)
 
             _uiState.update { currentState ->
-                currentState.copy(definition = definition?.get(0))
+                currentState.copy(definition = definition[0])
             }
         }
-    }
-
-    private suspend fun searchWord(word: String): List<DictionaryResponse>? {
-        val response: List<DictionaryResponse>? = httpClient
-            .get("https://api.dictionaryapi.dev/api/v2/entries/en/$word") {
-                timeout {
-                    requestTimeoutMillis = 30000
-                }
-            }
-            .body<List<DictionaryResponse>?>()
-        return response
     }
 }
