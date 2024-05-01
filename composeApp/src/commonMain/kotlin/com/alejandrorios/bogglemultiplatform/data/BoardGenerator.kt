@@ -4,11 +4,14 @@ import com.alejandrorios.bogglemultiplatform.data.solver.buildTrie
 import com.alejandrorios.bogglemultiplatform.data.solver.parseSquareBoard
 import com.alejandrorios.bogglemultiplatform.data.solver.solveBoard
 import com.alejandrorios.bogglemultiplatform.utils.Boards4x4
+import com.alejandrorios.bogglemultiplatform.utils.OpenForMokkery
 import kotlin.random.Random
 
+@OpenForMokkery
 enum class Language { EN, ES}
 
-data class BoardGenerator(private val language: Language) {
+@OpenForMokkery
+class BoardGenerator(private val language: Language = Language.EN) {
     fun generateBoard(): ArrayList<String> {
         val dice = (1..16).shuffled()
         val boardCombination = Boards4x4.random()

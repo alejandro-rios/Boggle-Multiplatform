@@ -5,9 +5,12 @@ import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
 import com.alejandrorios.bogglemultiplatform.data.Language
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
-import com.alejandrorios.bogglemultiplatform.data.service.BoggleService
+import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Failure
+import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Success
+import com.alejandrorios.bogglemultiplatform.domain.repository.BoggleRepository
+import com.alejandrorios.bogglemultiplatform.domain.repository.LocalRepository
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
-import io.github.xxfast.kstore.KStore
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,8 +20,11 @@ import org.jetbrains.compose.resources.InternalResourceApi
 import org.jetbrains.compose.resources.readResourceBytes
 import kotlin.collections.set
 
-class BoggleViewModel(private val service: BoggleService, private val boggleStore: KStore<BoggleUiState>) : ViewModel() {
-    private var boardGenerator = BoardGenerator(Language.EN)
+class BoggleViewModel(
+    private val repository: BoggleRepository,
+    private var boardGenerator: BoardGenerator,
+    private val localRepository: LocalRepository
+) : ViewModel() {
     private var boardDictionary = "files/en_dictionary.txt"
 
     // Game UI state
@@ -28,27 +34,27 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
     private var board = mutableStateListOf<String>()
     private var positionsSet = mutableSetOf<Int>()
 
-    init {
+    fun gameStart() {
         viewModelScope.launch {
-            val boggleGameState: BoggleUiState? = boggleStore.get()
-
-            if (boggleGameState != null && boggleGameState.result.isNotEmpty()) {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        words = boggleGameState.words,
-                        wordsGuessed = boggleGameState.wordsGuessed,
-                        result = boggleGameState.result,
-                        board = boggleGameState.board,
-                        boardMap = boggleGameState.boardMap,
-                        wordsCount = boggleGameState.wordsCount,
-                        score = boggleGameState.score,
-                        useAPI = boggleGameState.useAPI,
-                        isEnglish = boggleGameState.isEnglish,
-                        isLoading = false,
-                    )
+            localRepository.getBoggleUiState().collect { boggleGameState ->
+                if (boggleGameState != null && boggleGameState.result.isNotEmpty()) {
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            words = boggleGameState.words,
+                            wordsGuessed = boggleGameState.wordsGuessed,
+                            result = boggleGameState.result,
+                            board = boggleGameState.board,
+                            boardMap = boggleGameState.boardMap,
+                            wordsCount = boggleGameState.wordsCount,
+                            score = boggleGameState.score,
+                            useAPI = boggleGameState.useAPI,
+                            isEnglish = boggleGameState.isEnglish,
+                            isLoading = false,
+                        )
+                    }
+                } else {
+                    createNewGame()
                 }
-            } else {
-                reloadBoard()
             }
         }
     }
@@ -67,12 +73,12 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
         }
     }
 
-    fun reloadBoard() {
+    fun createNewGame() {
         viewModelScope.launch {
             val boardMap: MutableMap<Int, String> = mutableMapOf()
             val useAPI = _uiState.value.useAPI
             val isEnglish = _uiState.value.isEnglish
-            boggleStore.delete()
+            localRepository.clearData()
             _uiState.value = BoggleUiState(words = emptyList())
             board.clear()
             board.addAll(boardGenerator.generateBoard().toMutableList())
@@ -88,7 +94,7 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
         }
     }
 
-    fun evaluateWord(dieKeys: List<Int>) {
+    fun evaluateWord(dieKeys: List<Int>, isFromTap: Boolean) {
         positionsSet.clear()
         positionsSet.addAll(dieKeys)
         var wordToEvaluate = ""
@@ -100,6 +106,13 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
         if (_uiState.value.result.contains(wordToEvaluate.lowercase()) && !_uiState.value.wordsGuessed.contains(wordToEvaluate)) {
             _uiState.update { currentState ->
                 currentState.copy(isAWord = true, word = wordToEvaluate)
+            }
+
+            if (isFromTap) {
+                viewModelScope.launch {
+                    delay(250)
+                    addWord()
+                }
             }
         } else {
             _uiState.update { currentState ->
@@ -125,12 +138,13 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
     private fun getSolution(board: List<String>) {
         viewModelScope.launch {
             if (_uiState.value.useAPI) {
-                val words = service.fetchWordsFromAPI(board).map {
-                    it.lowercase()
-                }
-
-                _uiState.update { currentState ->
-                    currentState.copy(result = words)
+                repository.fetchWordsFromAPI(board).collect { result ->
+                    when (result) {
+                        is Failure -> {}
+                        is Success -> _uiState.update { currentState ->
+                            currentState.copy(result = result.data.map { it.lowercase() })
+                        }
+                    }
                 }
 
                 getWordsByLetter()
@@ -153,12 +167,12 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
     private fun getWordsByLetter() {
         val results = _uiState.value.result
         val wordsCount = WordsCount(
-            threeLetters = WordPair(results.filter { it.length == 3 }.size, emptyList()),
-            fourLetters = WordPair(results.filter { it.length == 4 }.size, emptyList()),
-            fiveLetters = WordPair(results.filter { it.length == 5 }.size, emptyList()),
-            sixLetters = WordPair(results.filter { it.length == 6 }.size, emptyList()),
-            sevenLetters = WordPair(results.filter { it.length == 7 }.size, emptyList()),
-            moreThanSevenLetters = WordPair(results.filter { it.length > 7 }.size, emptyList())
+            threeLetters = WordPair(results.count { it.length == 3 }, emptyList()),
+            fourLetters = WordPair(results.count { it.length == 4 }, emptyList()),
+            fiveLetters = WordPair(results.count { it.length == 5 }, emptyList()),
+            sixLetters = WordPair(results.count { it.length == 6 }, emptyList()),
+            sevenLetters = WordPair(results.count { it.length == 7 }, emptyList()),
+            moreThanSevenLetters = WordPair(results.count { it.length > 7 }, emptyList())
         )
 
         _uiState.update { currentState ->
@@ -193,7 +207,7 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
         }
 
         viewModelScope.launch {
-            boggleStore.set(_uiState.value)
+            localRepository.saveBoggleUiState(_uiState.value)
         }
     }
 
@@ -226,10 +240,13 @@ class BoggleViewModel(private val service: BoggleService, private val boggleStor
 
     fun getWordDefinition(word: String) {
         viewModelScope.launch {
-            val definition = service.getDefinition(word)
-
-            _uiState.update { currentState ->
-                currentState.copy(definition = definition[0])
+            repository.getDefinition(word).collect { result ->
+                when (result) {
+                    is Failure -> {}
+                    is Success -> _uiState.update { currentState ->
+                        currentState.copy(definition = result.data[0])
+                    }
+                }
             }
         }
     }

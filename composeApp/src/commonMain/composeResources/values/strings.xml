@@ -11,4 +11,5 @@
     <string name="new_game">New game</string>
     <string name="label_hint">Give me a hint</string>
     <string name="message_hint">Try with: %s</string>
+    <string name="total_words">%1$d words</string>
 </resources>

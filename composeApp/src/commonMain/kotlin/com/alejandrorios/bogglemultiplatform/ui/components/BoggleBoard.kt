@@ -27,13 +27,19 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.alejandrorios.bogglemultiplatform.isAndroid
 import com.alejandrorios.bogglemultiplatform.utils.photoGridDragHandler
 
@@ -46,7 +52,7 @@ fun BoggleBoard(
     modifier: Modifier = Modifier,
     isAWord: Boolean,
     onDragEnded: () -> Unit,
-    updateKeys: (values: List<Int>) -> Unit,
+    updateKeys: (values: List<Int>, isFromTap: Boolean) -> Unit,
     triggerRotation: Boolean = false,
     onRotatedTriggered: () -> Unit,
 ) {
@@ -54,27 +60,23 @@ fun BoggleBoard(
     val state = rememberLazyGridState()
     val updatedTrigger = rememberUpdatedState(triggerRotation)
 
-    // This is the progress path which wis changed using path measure
     val pathWithProgress by remember { mutableStateOf(Path()) }
-
-    // using path
     val pathMeasure by remember { mutableStateOf(PathMeasure()) }
-
     val path = remember { Path() }
+    val textMeasurer = rememberTextMeasurer()
 
-    //TODO: Need it for draw text
-//    val textMeasurer = rememberTextMeasurer()
-//
-//    val style = TextStyle(
-//        fontSize = 13.sp,
-//        fontWeight = FontWeight.Bold,
-//        color = Color.White
-//    )
-
+    val style = TextStyle(
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White
+    )
 
     val borderProgress = animateFloatAsState(
         targetValue = progress,
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+        finishedListener = {
+            selectedIds.value = emptySet()
+        }
     ).value
 
     val isRotated = rememberSaveable { mutableFloatStateOf(0f) }
@@ -108,9 +110,8 @@ fun BoggleBoard(
         modifier = modifier
             .rotate(boardRotationAngle)
             .drawWithCache {
-                var progressEndPos = Offset.Zero
-                //TODO: Need it for draw text
-//                val textLayoutResult = textMeasurer.measure(wordsGuessed, style)
+                var progressEndPos: Offset
+                val textLayoutResult = textMeasurer.measure(wordsGuessed, style)
 
                 onDrawBehind {
                     scale(1f, -1f, Offset(size.width / 2, size.height / 2)) {
@@ -152,31 +153,37 @@ fun BoggleBoard(
                             drawCircle(
                                 color = Color(0xFFD28B2D),
                                 center = progressEndPos,
-                                radius = 10.dp.toPx()
+                                radius = 16.dp.toPx()
                             )
-                        }
 
-                        // TODO: text in this position looks cut
-//                        drawText(
-//                            textMeasurer = textMeasurer,
-//                            text = wordsGuessed,
-//                            style = style,
-//                            topLeft = Offset(
-//                                x = progressEndPos.x - textLayoutResult.size.width / 2 + (textLayoutResult.size.width / 2 * 0.25f),
-//                                y = progressEndPos.y - 0.75f * textLayoutResult.size.height,
-//                            )
-//                        )
+                            scale(1f, -1f, progressEndPos) {
+                                rotate(if (isAndroid) -90f + dieRotationAngle else dieRotationAngle, progressEndPos) {
+                                    drawText(
+                                        textMeasurer = textMeasurer,
+                                        text = wordsGuessed,
+                                        style = style,
+                                        topLeft = Offset(
+                                            x = progressEndPos.x - textLayoutResult.size.width / 2,
+                                            y = progressEndPos.y - textLayoutResult.size.height / 2
+                                        ),
+                                        size = Size(
+                                            textLayoutResult.size.width.toFloat() + 20, textLayoutResult.size.height.toFloat() +
+                                                    20
+                                        ),
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
     ) {
-
         LazyVerticalGrid(
             state = state,
             columns = GridCells.Fixed(4),
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalArrangement = Arrangement.spacedBy(18.dp),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(20.dp),
             modifier = modifier.photoGridDragHandler(state, selectedIds, onDragEnded, updateKeys),
             userScrollEnabled = false
         ) {
@@ -195,7 +202,7 @@ fun BoggleBoard(
                             } else {
                                 selectedIds.value.plus(index)
                             }
-                            updateKeys(selectedIds.value.toList())
+                            updateKeys(selectedIds.value.toList(), true)
                         }
                 )
             }

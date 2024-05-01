@@ -1,11 +1,11 @@
 [versions]
 
 kotlin = "1.9.23"
-agp = "8.3.1"
+agp = "8.3.2"
 composeMultiplatform = "1.6.10-dev1557"
 androidx-appcompat = "1.6.1"
-androidx-activityCompose = "1.8.2"
-compose-uitooling = "1.6.4"
+androidx-activityCompose = "1.9.0"
+compose-uitooling = "1.6.6"
 moko-mvvm = "0.16.1"
 kotlinx-coroutines = "1.8.0"
 ktor = "2.3.9"
@@ -14,6 +14,8 @@ kstore = "0.7.1"
 harawata-appdirs = "1.2.1"
 koin = "3.6.0-alpha3"
 koinCompose = "1.2.0-alpha3"
+turbine = "1.0.0"
+mokkery = "1.9.23-1.6.1"
 
 [libraries]
 
@@ -24,6 +26,7 @@ moko-mvvm-compose = { module = "dev.icerock.moko:mvvm-compose", version.ref = "m
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
@@ -39,6 +42,7 @@ kstore-storage = { module = "io.github.xxfast:kstore-storage", version.ref = "ks
 harawata-appdirs = { module = "net.harawata:appdirs", version.ref = "harawata-appdirs" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinCompose" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 
@@ -47,3 +51,5 @@ cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotli
 compose = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+all-open = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }

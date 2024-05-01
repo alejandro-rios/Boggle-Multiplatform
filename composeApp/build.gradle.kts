@@ -6,6 +6,16 @@ plugins {
     alias(libs.plugins.cocoapods)
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinx.serialization)
+    alias(libs.plugins.mokkery)
+    alias(libs.plugins.all.open)
+}
+
+/***
+ * This to enable the mock of a final class, be aware of its limitations.
+ * Source: https://www.mokkery.dev/docs/Guides/Mocking#final-classes
+ */
+allOpen {
+    annotation("com.alejandrorios.bogglemultiplatform.utils.OpenForMokkery")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -69,7 +79,12 @@ kotlin {
             implementation(libs.ktor.serialization.json)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kstore)
+        }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
         }
 
         androidMain.dependencies {

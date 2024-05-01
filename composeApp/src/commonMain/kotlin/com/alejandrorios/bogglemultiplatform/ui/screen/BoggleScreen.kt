@@ -23,6 +23,7 @@ import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +44,7 @@ import boggle_multiplatform.composeapp.generated.resources.language
 import boggle_multiplatform.composeapp.generated.resources.new_game
 import boggle_multiplatform.composeapp.generated.resources.rotate
 import boggle_multiplatform.composeapp.generated.resources.score
+import boggle_multiplatform.composeapp.generated.resources.total_words
 import boggle_multiplatform.composeapp.generated.resources.use_api
 import com.alejandrorios.bogglemultiplatform.ui.components.BoggleBoard
 import com.alejandrorios.bogglemultiplatform.ui.components.HorizontalSpacer
@@ -59,6 +61,10 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val onRotateTriggered = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        boggleViewModel.gameStart()
+    }
 
     if (boggleUiState.isFinish) {
         AlertDialog(
@@ -116,7 +122,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                         VerticalSpacer(height = 16.dp)
                         Row {
                             Text(
-                                text = "${boggleUiState.wordsGuessed.size}/${boggleUiState.result.size} Words",
+                                text = stringResource(Res.string.total_words, boggleUiState.result.size),
                                 fontSize = 24.sp
                             )
                             HorizontalSpacer(width = 20.dp)
@@ -175,7 +181,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                             horizontalArrangement = Arrangement.SpaceEvenly,
                         ) {
                             Button(
-                                onClick = boggleViewModel::reloadBoard,
+                                onClick = boggleViewModel::createNewGame,
                                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
                             ) {

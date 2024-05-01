@@ -18,7 +18,7 @@ fun Modifier.photoGridDragHandler(
     lazyGridState: LazyGridState,
     selectedIds: MutableState<Set<Int>>,
     onDragEnded: () -> Unit,
-    update: (values: List<Int>) -> Unit
+    update: (values: List<Int>, isFromTap: Boolean) -> Unit
 ) = pointerInput(Unit) {
     var currentKey: Int? = null
     val selectedKeys = mutableListOf<Int>()
@@ -55,7 +55,7 @@ fun Modifier.photoGridDragHandler(
                         selectedKeys.add(key)
                         selectedIds.value += key
                     }
-                    update(selectedIds.value.toList())
+                    update(selectedIds.value.toList(), false)
                     currentKey = key
                 }
             }

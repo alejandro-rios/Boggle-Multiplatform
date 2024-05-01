@@ -63,6 +63,8 @@ https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/77167768-
 - [KStore](https://github.com/xxfast/KStore): A tiny Kotlin multiplatform library that assists in saving and restoring objects.
 - [Moko-MVVM](https://github.com/icerockdev/moko-mvvm): Model-View-ViewModel architecture components for mobile (android & ios) Kotlin Multiplatform development.
 - [Koin](https://insert-koin.io/): A smart Kotlin injection library.
+- [Turbine](https://github.com/cashapp/turbine): A small testing library for kotlinx.coroutines Flow.
+- [Mokkery](https://mokkery.dev/): The mocking library for Kotlin Multiplatform, easy to use, boilerplate-free and compiler plugin driven.
 
 ## ⚙️ Architecture
 The architecture used for the application consists on a mix of MVVM and MVI patterns, This project uses a basic UiState(`BoggleUiState`) to handle the application interface state at a given moment.
