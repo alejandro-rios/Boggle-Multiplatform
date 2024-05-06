@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface LocalRepository {
     suspend fun getBoggleUiState(): Flow<BoggleUiState?>
 
-    suspend fun saveBoggleUiState(uiState: BoggleUiState): Flow<Unit>
+    suspend fun saveBoggleUiState(uiState: BoggleUiState)
 
-    suspend fun clearData(): Flow<Unit>
+    suspend fun clearData()
 }

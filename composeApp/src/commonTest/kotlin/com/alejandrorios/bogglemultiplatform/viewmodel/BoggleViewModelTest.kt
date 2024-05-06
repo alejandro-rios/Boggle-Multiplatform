@@ -2,6 +2,7 @@ package com.alejandrorios.bogglemultiplatform.viewmodel
 
 import app.cash.turbine.test
 import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
+import com.alejandrorios.bogglemultiplatform.data.Language
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse
@@ -14,6 +15,7 @@ import com.alejandrorios.bogglemultiplatform.utils.mockedBoardMap
 import com.alejandrorios.bogglemultiplatform.utils.mockedDefinitions
 import com.alejandrorios.bogglemultiplatform.utils.mockedLocalResults
 import com.alejandrorios.bogglemultiplatform.utils.mockedResults
+import dev.mokkery.MockMode
 import dev.mokkery.answering.returns
 import dev.mokkery.every
 import dev.mokkery.everySuspend
@@ -41,14 +43,15 @@ class BoggleViewModelTest {
         everySuspend { getDefinition("test") } returns flowOf(CallResponse.Success(mockedDefinitions))
     }
 
-    private val boardGenerator = mock<BoardGenerator> {
+    private val boardGenerator = mock<BoardGenerator>(MockMode.autoUnit) {
         every { generateBoard() } returns mockedBoard
-        every { getBoardSolution(mockedBoard, any()) } returns mockedLocalResults
+        every { getBoardSolutionTwo(mockedBoard, any()) } returns mockedLocalResults
+        every { language } returns Language.EN
     }
 
     private val localRepository = mock<LocalRepository> {
         everySuspend { getBoggleUiState() } returns flowOf(mockedUiState)
-        everySuspend { clearData() } returns flowOf(Unit)
+        everySuspend { clearData() } returns Unit
     }
 
     private lateinit var viewModel: BoggleViewModel
@@ -286,6 +289,7 @@ class BoggleViewModelTest {
             assertEquals("", previousStep.word)
 
             viewModel.evaluateWord(artWordKeys, false)
+            awaitItem()
 
             val resultStep = awaitItem()
 
@@ -306,6 +310,7 @@ class BoggleViewModelTest {
             assertEquals("", previousStep.word)
 
             viewModel.evaluateWord(nonWordKeys, false)
+            awaitItem()
 
             val resultStep = awaitItem()
 

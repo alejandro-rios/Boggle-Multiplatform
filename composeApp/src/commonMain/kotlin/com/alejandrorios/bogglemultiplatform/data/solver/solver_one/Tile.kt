@@ -1,13 +1,12 @@
-package com.alejandrorios.bogglemultiplatform.data.solver
+package com.alejandrorios.bogglemultiplatform.data.solver.solver_one
 
 import kotlin.math.sqrt
 
 /**
  * Represents one Tile on a Boggle board.
- * There is no board class.  Use the properties in Tile to create a graph to represent the board.
+ * There is no board class. Use the properties in Tile to create a graph to represent the board.
  */
 class Tile(val character: Char) {
-
     var up: Tile? = null
     var upright: Tile? = null
     var right: Tile? = null
@@ -17,12 +16,9 @@ class Tile(val character: Char) {
     var left: Tile? = null
     var upLeft: Tile? = null
 
-
-    fun neighbors(): Sequence<Tile> {
-        return sequenceOf(up, upright, right, downRight, down, downLeft, left, upLeft)
-                .filter { it != null }
-                .map { it as Tile }
-    }
+    fun neighbors(): Sequence<Tile> = sequenceOf(up, upright, right, downRight, down, downLeft, left, upLeft)
+        .filter { it != null }
+        .map { it as Tile }
 }
 
 /**
@@ -37,26 +33,26 @@ fun buildBoard(input: Array<Array<Char>>): Set<Tile> {
             val tile = Tile(element)
             tileMap[x to y] = tile
 
-            if(tileMap.containsKey(x-1 to y)){
-                val foreigner = tileMap[x-1 to y]!!
+            if (tileMap.containsKey(x - 1 to y)) {
+                val foreigner = tileMap[x - 1 to y]!!
                 tile.left = foreigner
                 foreigner.right = tile
             }
 
-            if(tileMap.containsKey(x-1 to y-1)){
-                val foreigner = tileMap[x-1 to y-1]!!
+            if (tileMap.containsKey(x - 1 to y - 1)) {
+                val foreigner = tileMap[x - 1 to y - 1]!!
                 tile.upLeft = foreigner
                 foreigner.downRight = tile
             }
 
-            if(tileMap.containsKey(x to y-1)){
-                val foreigner = tileMap[x to y-1]!!
+            if (tileMap.containsKey(x to y - 1)) {
+                val foreigner = tileMap[x to y - 1]!!
                 tile.up = foreigner
                 foreigner.down = tile
             }
 
-            if(tileMap.containsKey(x+1 to y-1)){
-                val foreigner = tileMap[x+1 to y-1]!!
+            if (tileMap.containsKey(x + 1 to y - 1)) {
+                val foreigner = tileMap[x + 1 to y - 1]!!
                 tile.upright = foreigner
                 foreigner.downLeft = tile
             }
@@ -77,9 +73,9 @@ fun parseSquareBoard(input: String): Set<Tile> {
     }
 
     val arrayArray = input.asSequence()
-            .batch(dimension)
-            .map { it.toTypedArray() }
-            .toList().toTypedArray()
+        .batch(dimension)
+        .map { it.toTypedArray() }
+        .toList().toTypedArray()
 
     return buildBoard(arrayArray)
 }

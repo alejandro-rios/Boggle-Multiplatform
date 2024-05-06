@@ -1,4 +1,4 @@
-package com.alejandrorios.bogglemultiplatform.data.solver
+package com.alejandrorios.bogglemultiplatform.data.solver.solver_one
 
 object SequenceExtensions
 

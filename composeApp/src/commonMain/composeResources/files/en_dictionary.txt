@@ -24795,6 +24795,7 @@ avifaunally
 avifaunas
 avifaunistic
 avigate
+avigated
 avigation
 avigator
 avigators

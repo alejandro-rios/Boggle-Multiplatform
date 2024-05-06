@@ -1,6 +1,5 @@
 package com.alejandrorios.bogglemultiplatform.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -22,6 +21,12 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Plagiarism
+import androidx.compose.material.icons.outlined.Rotate90DegreesCw
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,14 +54,15 @@ import boggle_multiplatform.composeapp.generated.resources.use_api
 import com.alejandrorios.bogglemultiplatform.ui.components.BoggleBoard
 import com.alejandrorios.bogglemultiplatform.ui.components.HorizontalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.VerticalSpacer
-import com.alejandrorios.bogglemultiplatform.ui.components.WordCounter
+import com.alejandrorios.bogglemultiplatform.ui.components.WordCounterRow
+import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_onPrimary
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_primary
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
-fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel = koinInject() ) {
+fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel = koinInject()) {
     val boggleUiState by boggleViewModel.uiState.collectAsState()
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
@@ -119,19 +125,19 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        VerticalSpacer(height = 16.dp)
+                        VerticalSpacer(spacing = 16.dp)
                         Row {
                             Text(
                                 text = stringResource(Res.string.total_words, boggleUiState.result.size),
                                 fontSize = 24.sp
                             )
-                            HorizontalSpacer(width = 20.dp)
+                            HorizontalSpacer(spacing = 20.dp)
                             Text(
                                 text = stringResource(Res.string.score, boggleUiState.score),
                                 fontSize = 24.sp
                             )
                         }
-                        VerticalSpacer(height = 20.dp)
+                        VerticalSpacer(spacing = 20.dp)
                         BoggleBoard(
                             progress = boggleUiState.wordsGuessed.size / boggleUiState.result.size.toFloat(),
                             wordsGuessed = boggleUiState.wordsGuessed.size.toString(),
@@ -145,7 +151,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                         ) {
                             onRotateTriggered.value = false
                         }
-                        VerticalSpacer(height = 30.dp)
+                        VerticalSpacer(spacing = 24.dp)
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 modifier = Modifier.size(20.dp),
@@ -153,33 +159,17 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                                 onCheckedChange = boggleViewModel::useAPI
                             )
                             HorizontalSpacer()
-                            Text(text = stringResource(Res.string.use_api), fontSize = 24.sp)
-                        }
-                        VerticalSpacer()
-                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(text = stringResource(Res.string.use_api), fontSize = 20.sp)
+                            HorizontalSpacer()
                             Switch(
                                 checked = boggleUiState.isEnglish,
                                 enabled = !boggleUiState.useAPI,
                                 onCheckedChange = boggleViewModel::changeLanguage
                             )
-                            Text(text = stringResource(Res.string.language), fontSize = 24.sp)
-                            HorizontalSpacer()
-                            Button(
-                                enabled = !onRotateTriggered.value,
-                                onClick = {
-                                    onRotateTriggered.value = true
-                                },
-                                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary),
-                                ){
-                                Text(text = stringResource(Res.string.rotate), fontSize = 20.sp, color = Color.White)
-                            }
+                            Text(text = stringResource(Res.string.language), fontSize = 20.sp)
                         }
                         VerticalSpacer()
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Button(
                                 onClick = boggleViewModel::createNewGame,
                                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
@@ -192,61 +182,39 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                                 )
                             }
                             HorizontalSpacer()
-                            Button(
+                            FilledIconButton(
+                                enabled = !onRotateTriggered.value,
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = md_theme_light_primary,
+                                    contentColor = md_theme_light_onPrimary,
+                                ),
+                                onClick = {
+                                    onRotateTriggered.value = true
+                                },
+                                content = { Icon(Icons.Outlined.Rotate90DegreesCw, stringResource(Res.string.rotate)) }
+                            )
+                            HorizontalSpacer()
+                            FilledIconButton(
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = md_theme_light_primary,
+                                    contentColor = md_theme_light_onPrimary,
+                                ),
                                 onClick = {
                                     scope.launch {
                                         val hint = boggleViewModel.getHint()
                                         snackBarHostState.showSnackbar("Try with: $hint")
                                     }
                                 },
-                                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
-                            ) {
-                                Text(
-                                    text = stringResource(Res.string.label_hint),
-                                    fontSize = 20.sp,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                        VerticalSpacer(height = 20.dp)
-                        Row(
-                            modifier = Modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            WordCounter(
-                                numberOfLetters = "3",
-                                wordPair = boggleUiState.wordsCount.threeLetters,
-                                viewModel = boggleViewModel,
-                            )
-                            WordCounter(
-                                numberOfLetters = "4",
-                                wordPair = boggleUiState.wordsCount.fourLetters,
-                                viewModel = boggleViewModel,
-                            )
-                            WordCounter(
-                                numberOfLetters = "5",
-                                wordPair = boggleUiState.wordsCount.fiveLetters,
-                                viewModel = boggleViewModel,
-                            )
-                            WordCounter(
-                                numberOfLetters = "6",
-                                wordPair = boggleUiState.wordsCount.sixLetters,
-                                viewModel = boggleViewModel,
-                            )
-                            WordCounter(
-                                numberOfLetters = "7",
-                                wordPair = boggleUiState.wordsCount.sevenLetters,
-                                viewModel = boggleViewModel,
-                            )
-                            WordCounter(
-                                numberOfLetters = "8+",
-                                wordPair = boggleUiState.wordsCount.moreThanSevenLetters,
-                                viewModel = boggleViewModel,
+                                content = { Icon(Icons.Outlined.Plagiarism, stringResource(Res.string.label_hint)) }
                             )
                         }
+                        VerticalSpacer(spacing = 20.dp)
+                        WordCounterRow(
+                            wordsCount = boggleUiState.wordsCount,
+                            onWordClick = boggleViewModel::getWordDefinition,
+                        )
                     }
-                    VerticalSpacer(height = 20.dp)
+                    VerticalSpacer(spacing = 20.dp)
                 }
             }
         }

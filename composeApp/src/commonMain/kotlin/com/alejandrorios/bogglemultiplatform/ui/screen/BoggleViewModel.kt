@@ -22,10 +22,9 @@ import kotlin.collections.set
 
 class BoggleViewModel(
     private val repository: BoggleRepository,
-    private var boardGenerator: BoardGenerator,
+    private val boardGenerator: BoardGenerator,
     private val localRepository: LocalRepository
 ) : ViewModel() {
-    private var boardDictionary = "files/en_dictionary.txt"
 
     // Game UI state
     private val _uiState = MutableStateFlow(BoggleUiState())
@@ -36,22 +35,23 @@ class BoggleViewModel(
 
     fun gameStart() {
         viewModelScope.launch {
-            localRepository.getBoggleUiState().collect { boggleGameState ->
-                if (boggleGameState != null && boggleGameState.result.isNotEmpty()) {
+            localRepository.getBoggleUiState().collect { gameState ->
+                if (gameState != null && gameState.result.isNotEmpty()) {
                     _uiState.update { currentState ->
                         currentState.copy(
-                            words = boggleGameState.words,
-                            wordsGuessed = boggleGameState.wordsGuessed,
-                            result = boggleGameState.result,
-                            board = boggleGameState.board,
-                            boardMap = boggleGameState.boardMap,
-                            wordsCount = boggleGameState.wordsCount,
-                            score = boggleGameState.score,
-                            useAPI = boggleGameState.useAPI,
-                            isEnglish = boggleGameState.isEnglish,
+                            words = gameState.words,
+                            wordsGuessed = gameState.wordsGuessed,
+                            result = gameState.result,
+                            board = gameState.board,
+                            boardMap = gameState.boardMap,
+                            wordsCount = gameState.wordsCount,
+                            score = gameState.score,
+                            useAPI = gameState.useAPI,
+                            isEnglish = gameState.isEnglish,
                             isLoading = false,
                         )
                     }
+                    changeLanguage(gameState.isEnglish)
                 } else {
                     createNewGame()
                 }
@@ -60,13 +60,7 @@ class BoggleViewModel(
     }
 
     fun changeLanguage(isEnglish: Boolean) {
-        boardGenerator = if (isEnglish) {
-            boardDictionary = "files/en_dictionary.txt"
-            BoardGenerator(Language.EN)
-        } else {
-            boardDictionary = "files/es_dictionary.txt"
-            BoardGenerator(Language.ES)
-        }
+        boardGenerator.language = if (isEnglish) Language.EN else Language.SPA
 
         _uiState.update { currentState ->
             currentState.copy(isEnglish = isEnglish)
@@ -215,9 +209,9 @@ class BoggleViewModel(
 
     @OptIn(InternalResourceApi::class)
     private suspend fun getWordsFromLocal(board: List<String>): List<String> {
-        val dictionary = readResourceBytes(boardDictionary).decodeToString().split("\r?\n|\r".toRegex()).toList()
+        val dictionary = readResourceBytes(boardGenerator.language.filePath).decodeToString().split("\r?\n|\r".toRegex()).toList()
 
-        return boardGenerator.getBoardSolution(ArrayList(board), dictionary)
+        return boardGenerator.getBoardSolutionTwo(board = board, dictionary = dictionary)
     }
 
     fun closeDialog() {

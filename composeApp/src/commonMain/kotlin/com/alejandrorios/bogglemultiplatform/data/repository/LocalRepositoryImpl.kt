@@ -7,6 +7,7 @@ import io.github.xxfast.kstore.KStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 
 class LocalRepositoryImpl(
     private val boggleStore: KStore<BoggleUiState>,
@@ -16,11 +17,11 @@ class LocalRepositoryImpl(
         emit(boggleStore.get())
     }.flowOn(appCoroutineDispatchers.io)
 
-    override suspend fun saveBoggleUiState(uiState: BoggleUiState): Flow<Unit> = flow {
-        emit(boggleStore.set(uiState))
-    }.flowOn(appCoroutineDispatchers.io)
+    override suspend fun saveBoggleUiState(uiState: BoggleUiState) = withContext(appCoroutineDispatchers.io) {
+        boggleStore.set(uiState)
+    }
 
-    override suspend fun clearData(): Flow<Unit> = flow {
-        emit(boggleStore.delete())
-    }.flowOn(appCoroutineDispatchers.io)
+    override suspend fun clearData() = withContext(appCoroutineDispatchers.io) {
+        boggleStore.delete()
+    }
 }

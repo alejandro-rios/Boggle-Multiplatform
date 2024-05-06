@@ -1,26 +1,23 @@
-package com.alejandrorios.bogglemultiplatform.data.solver
+package com.alejandrorios.bogglemultiplatform.data.solver.solver_one
 
 /**
- * Simple Trie class.  Logic to build the Trie lives outside of the class, but in this file.
+ * Simple Trie class.
+ * Logic to build the Trie lives outside of the class, but in this file.
  */
 //TODO: Optimization (minor): Use array instead of map
 class Trie {
-
     private val children = mutableMapOf<Char, Trie>()
     var fullString: String? = null
 
-    fun next(c: Char): Trie? {
-        return children[c]
-    }
+    fun next(c: Char): Trie? = children[c]
 
     fun setNext(c: Char, trie: Trie) {
         children[c] = trie
     }
-
 }
 
 /**
- * Transform a sequence of Strings into a Trie
+ * Transform a sequence of Strings into a Trie, in this case we are creating a Trie from the dictionary
  */
 fun buildTrie(input: Sequence<String>): Trie {
     val root = Trie()
@@ -34,10 +31,7 @@ fun buildTrie(input: Sequence<String>): Trie {
  * Adds a single sequence of Chars to a Trie.
  * If the Trie doesn't exist, create it.
  */
-fun addSequenceToTrie(seq: Iterator<Char>,
-                      fullString: String,
-                      maybeNode: Trie?): Trie {
-
+fun addSequenceToTrie(seq: Iterator<Char>, fullString: String, maybeNode: Trie?): Trie {
     val node = maybeNode ?: Trie()
 
     if (!seq.iterator().hasNext()) {
@@ -45,6 +39,7 @@ fun addSequenceToTrie(seq: Iterator<Char>,
     } else {
         val nextC = seq.next()
         val nextNode = node.next(nextC)
+
         node.setNext(nextC, addSequenceToTrie(seq, fullString, nextNode))
     }
 

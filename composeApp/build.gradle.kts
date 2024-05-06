@@ -20,7 +20,7 @@ allOpen {
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
+    applyDefaultHierarchyTemplate()
     androidTarget {
         compilations.all {
             kotlinOptions {
@@ -67,6 +67,7 @@ kotlin {
             implementation(compose.animationGraphics)
             implementation(compose.material)
             implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.moko.mvvm.compose)

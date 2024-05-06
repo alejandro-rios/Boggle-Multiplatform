@@ -13,6 +13,7 @@ import io.github.xxfast.kstore.file.storeOf
 import okio.Path.Companion.toPath
 
 actual val store: KStore<BoggleUiState> by lazy {
+    println(appStorage)
     storeOf("${appStorage}/saved.json".toPath(), BoggleUiState())
 }
 

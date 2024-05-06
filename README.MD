@@ -28,7 +28,8 @@ now, here's some details of the game:
 - You can click on each word guessed to see it's definition.
 
 ## 📢 Important mentions
-- Local solver was implemented and adjusted based on [Ryan Grasell's repo](https://github.com/rgrasell/BoggleSolver/)
+- Local solver `getBoardSolutionOne` was implemented and adjusted based on [Ryan Grasell's repo](https://github.com/rgrasell/BoggleSolver/)
+- Local solver `getBoardSolutionTwo` was implemented and adjusted based on [Ali Shalabi's repo](https://github.com/alishalabi/boggle), here's the [article](https://medium.com/@ashalabi13/solving-boggle-using-depth-first-searches-and-prefix-trees-9c3faa89ea99) that explains his implementation.
 - API solver url is from [Codebox Boggle solver](https://codebox.net/pages/boggle-game-solver-and-web-service)
 - Word definitions are obtained from the [Free Dictionary API](https://dictionaryapi.dev/)
 - Huge thanks to [Andres Rojas](https://andresrojas.dev/) for helping me with the initial steps of the project.
@@ -67,7 +68,13 @@ https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/77167768-
 - [Mokkery](https://mokkery.dev/): The mocking library for Kotlin Multiplatform, easy to use, boilerplate-free and compiler plugin driven.
 
 ## ⚙️ Architecture
-The architecture used for the application consists on a mix of MVVM and MVI patterns, This project uses a basic UiState(`BoggleUiState`) to handle the application interface state at a given moment.
+The architecture used for the application consists of the following:
+
+- Clean Architecture.
+- Repository pattern.
+- MVVM pattern.
+
+This project uses a basic UiState (`BoggleUiState`) to handle the application interface state at a given moment.
 
 ## 📓 Notes and considerations
 This project is not finished, there's a lot of improvements that can be made, and I'm pretty sure that the app has 
