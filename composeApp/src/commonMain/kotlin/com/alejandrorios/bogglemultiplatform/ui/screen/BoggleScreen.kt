@@ -105,6 +105,26 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
         )
     }
 
+    if (boggleUiState.hintDefinition != null) {
+        AlertDialog(
+            onDismissRequest = { },
+            confirmButton = {
+                Button(onClick = boggleViewModel::closeHintDefinitionDialog) {
+                    Text(stringResource(Res.string.label_ok))
+                }
+            },
+            title = { Text(boggleUiState.hintDefinition!!.getWordAsHint()) },
+            text = {
+                Text(
+                    "${
+                        boggleUiState.hintDefinition?.meanings?.first()?.definitions?.first()
+                            ?.definition
+                    }"
+                )
+            },
+        )
+    }
+
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
@@ -199,12 +219,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                                     containerColor = md_theme_light_primary,
                                     contentColor = md_theme_light_onPrimary,
                                 ),
-                                onClick = {
-                                    scope.launch {
-                                        val hint = boggleViewModel.getHint()
-                                        snackBarHostState.showSnackbar("Try with: $hint")
-                                    }
-                                },
+                                onClick = boggleViewModel::getHint,
                                 content = { Icon(Icons.Outlined.Plagiarism, stringResource(Res.string.label_hint)) }
                             )
                         }

@@ -205,7 +205,11 @@ class BoggleViewModel(
         }
     }
 
-    fun getHint(): String = _uiState.value.result.first { word -> !_uiState.value.wordsGuessed.contains(word.uppercase()) }
+    fun getHint() {
+        val word = _uiState.value.result.first { word -> !_uiState.value.wordsGuessed.contains(word.uppercase()) }
+
+        getWordDefinition(word, true)
+    }
 
     @OptIn(InternalResourceApi::class)
     private suspend fun getWordsFromLocal(board: List<String>): List<String> {
@@ -226,19 +230,29 @@ class BoggleViewModel(
         }
     }
 
+    fun closeHintDefinitionDialog() {
+        _uiState.update { currentState ->
+            currentState.copy(hintDefinition = null)
+        }
+    }
+
     fun useAPI(useAPI: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(useAPI = useAPI)
         }
     }
 
-    fun getWordDefinition(word: String) {
+    fun getWordDefinition(word: String, isFromHint: Boolean = false) {
         viewModelScope.launch {
             repository.getDefinition(word).collect { result ->
                 when (result) {
                     is Failure -> {}
                     is Success -> _uiState.update { currentState ->
-                        currentState.copy(definition = result.data[0])
+                        if(isFromHint) {
+                            currentState.copy(hintDefinition = result.data[0])
+                        } else {
+                            currentState.copy(definition = result.data[0])
+                        }
                     }
                 }
             }

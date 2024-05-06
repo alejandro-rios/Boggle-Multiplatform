@@ -6,7 +6,17 @@ import kotlinx.serialization.Serializable
 data class DictionaryResponse(
     val word: String? = null,
     val meanings: ArrayList<Meanings> = arrayListOf(),
-)
+) {
+    fun getWordAsHint(): String {
+        var wordAsHint = word!![0].toString()
+
+        for (i in 1 until word.length) {
+            wordAsHint += " _"
+        }
+
+        return wordAsHint
+    }
+}
 
 @Serializable
 data class Meanings(
