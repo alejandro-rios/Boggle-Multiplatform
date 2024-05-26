@@ -199,16 +199,17 @@ class BoggleViewModelTest {
 
     @Test
     fun given_viewmodel_when_getHint_is_called_then_should_return_string() = runTest {
-        viewModel.gameStart()
+        viewModel.createNewGame()
 
         advanceUntilIdle()
 
         viewModel.uiState.test {
-            awaitItem()
 
-            val resultStep = viewModel.getHint()
+            viewModel.getHint()
 
-            assertEquals("one", resultStep)
+            val resultStep = awaitItem()
+
+            assertEquals(mockedDefinitions[0], resultStep.hintDefinition)
         }
     }
 
