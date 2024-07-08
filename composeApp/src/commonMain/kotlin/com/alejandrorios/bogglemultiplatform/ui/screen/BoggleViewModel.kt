@@ -1,6 +1,8 @@
 package com.alejandrorios.bogglemultiplatform.ui.screen
 
 import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
 import com.alejandrorios.bogglemultiplatform.data.Language
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
@@ -9,7 +11,6 @@ import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Failure
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Success
 import com.alejandrorios.bogglemultiplatform.domain.repository.BoggleRepository
 import com.alejandrorios.bogglemultiplatform.domain.repository.LocalRepository
-import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

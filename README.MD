@@ -1,11 +1,11 @@
 # Boggle Multiplatform
 [![Build](https://github.com/alejandro-rios/Boggle-Multiplatform/actions/workflows/build.yml/badge.svg)](https://github.com/alejandro-rios/Boggle-Multiplatform/actions/workflows/build.yml)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9.23-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.0-blue.svg?style=flat&logo=kotlin)](https://kotlinlang.org)
 
 ![badge-android](http://img.shields.io/badge/platform-android-3DDC84.svg?style=flat)
 ![badge-ios](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
-![badge-browser](https://img.shields.io/badge/platform-js-F0DB4F.svg?style=flat)
+![badge-browser](https://img.shields.io/badge/platform-wasm-654FF0.svg?style=flat)
 
 A simple Boggle game inspired on this [site](https://wordshake.com/boggle), the App is implemented with Kotlin and Compose Multiplatform, 
 have fun searching words in a 4x4 board of letters, the idea behind this App is to explore and play with [KMP](https://kotlinlang.org/docs/multiplatform.html) and [CMP](https://www.jetbrains.com/lp/compose-multiplatform/).
@@ -62,7 +62,7 @@ https://github.com/alejandro-rios/Boggle-Multiplatform/assets/10689052/77167768-
 - [Kotlin Coroutines](https://github.com/Kotlin/kotlinx.coroutines): Simple library used to run Asynchronous or non-blocking calls.
 - [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization): Simple library used to serialize data.
 - [KStore](https://github.com/xxfast/KStore): A tiny Kotlin multiplatform library that assists in saving and restoring objects.
-- [Moko-MVVM](https://github.com/icerockdev/moko-mvvm): Model-View-ViewModel architecture components for mobile (android & ios) Kotlin Multiplatform development.
+- [Jetpack ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel): A business logic or screen level state holder.
 - [Koin](https://insert-koin.io/): A smart Kotlin injection library.
 - [Turbine](https://github.com/cashapp/turbine): A small testing library for kotlinx.coroutines Flow.
 - [Mokkery](https://mokkery.dev/): The mocking library for Kotlin Multiplatform, easy to use, boilerplate-free and compiler plugin driven.

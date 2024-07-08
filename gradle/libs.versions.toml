@@ -1,21 +1,21 @@
 [versions]
-
-kotlin = "1.9.23"
+kotlin = "2.0.0"
 agp = "8.3.2"
-composeMultiplatform = "1.6.10"
-androidx-appcompat = "1.6.1"
+
+androidx-appcompat = "1.7.0"
+androidx-lifecycle = "2.8.0"
 androidx-activityCompose = "1.9.0"
-compose-uitooling = "1.6.7"
-moko-mvvm = "0.16.1"
-kotlinx-coroutines = "1.8.0"
-ktor = "2.3.9"
+compose-plugin = "1.6.11"
+compose-uitooling = "1.6.8"
+kotlinx-coroutines = "1.8.1"
+ktor = "3.0.0-wasm2"
 kotlinx-serialization = "1.6.3"
-kstore = "0.7.1"
+kstore = "0.8.0"
 harawata-appdirs = "1.2.1"
 koin = "3.6.0-alpha3"
 koinCompose = "1.2.0-alpha3"
-turbine = "1.0.0"
-mokkery = "1.9.23-1.7.0"
+turbine = "1.1.0"
+mokkery = "2.1.1"
 
 [libraries]
 
@@ -24,7 +24,8 @@ androidx-activityCompose = { module = "androidx.activity:activity-compose", vers
 compose-uitooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-uitooling" }
 
 # Viewmodel
-moko-mvvm-compose = { module = "dev.icerock.moko:mvvm-compose", version.ref = "moko-mvvm" }
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
 # Coroutines
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
@@ -58,9 +59,9 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 
-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-cocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
-compose = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
