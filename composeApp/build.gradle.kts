@@ -31,6 +31,11 @@ kotlin {
 
     jvm("desktop")
 
+    js {
+        browser()
+        binaries.executable()
+    }
+
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
@@ -101,6 +106,12 @@ kotlin {
             implementation(libs.ktor.client.java)
             implementation(libs.kstore.file)
             implementation(libs.harawata.appdirs)
+        }
+
+        jsMain.dependencies {
+            implementation(compose.html.core)
+            implementation(libs.ktor.client.js)
+            implementation(libs.kstore.storage)
         }
 
         wasmJsMain.dependencies {

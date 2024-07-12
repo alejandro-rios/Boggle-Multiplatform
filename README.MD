@@ -5,6 +5,7 @@
 ![badge-android](http://img.shields.io/badge/platform-android-3DDC84.svg?style=flat)
 ![badge-ios](http://img.shields.io/badge/platform-ios-EAEAEA.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-4D76CD.svg?style=flat)
+![badge-browser](https://img.shields.io/badge/platform-js-F0DB4F.svg?style=flat)
 ![badge-browser](https://img.shields.io/badge/platform-wasm-654FF0.svg?style=flat)
 
 A simple Boggle game inspired on this [site](https://wordshake.com/boggle), the App is implemented with Kotlin and Compose Multiplatform, 
