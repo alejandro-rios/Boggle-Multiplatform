@@ -18,7 +18,7 @@ fun networkModule(enableNetworkLogs: Boolean = false) = module {
     single { createJson() }
     single { createHttpClient(get(), enableNetworkLogs = enableNetworkLogs) }
     single { BoggleService(get()) }
-    single<BoggleRepository> { BoggleRepositoryImpl(get(), get()) }
+    single<BoggleRepository> { BoggleRepositoryImpl(get()) }
 }
 
 @OptIn(ExperimentalSerializationApi::class)

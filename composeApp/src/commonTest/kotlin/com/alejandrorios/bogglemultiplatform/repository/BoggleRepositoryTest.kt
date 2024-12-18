@@ -3,29 +3,21 @@ package com.alejandrorios.bogglemultiplatform.repository
 import com.alejandrorios.bogglemultiplatform.data.repository.BoggleRepositoryImpl
 import com.alejandrorios.bogglemultiplatform.data.service.BoggleService
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse
-import com.alejandrorios.bogglemultiplatform.domain.utils.dispatchers.AppCoroutineDispatchers
 import com.alejandrorios.bogglemultiplatform.utils.mockedDefinitions
 import com.alejandrorios.bogglemultiplatform.utils.mockedResults
 import dev.mokkery.answering.returns
-import dev.mokkery.every
 import dev.mokkery.everySuspend
 import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import dev.mokkery.verifySuspend
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class BoggleRepositoryTest {
 
-    private val appCoroutineDispatchers = mock<AppCoroutineDispatchers> {
-        every { io } returns UnconfinedTestDispatcher()
-    }
     private val service = mock<BoggleService> {
         everySuspend { fetchWordsFromAPI(any()) } returns CallResponse.Success(mockedResults)
         everySuspend { getDefinition("test") } returns CallResponse.Success(mockedDefinitions)
@@ -35,7 +27,7 @@ class BoggleRepositoryTest {
 
     @BeforeTest
     fun setUp() {
-        repository = BoggleRepositoryImpl(service, appCoroutineDispatchers)
+        repository = BoggleRepositoryImpl(service)
     }
 
     @Test

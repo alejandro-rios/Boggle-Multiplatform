@@ -10,10 +10,10 @@ import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleScreen
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
-import okio.Path.Companion.toPath
+import kotlinx.io.files.Path
 
 actual val store: KStore<BoggleUiState> by lazy {
-    storeOf("${appStorage}/saved.json".toPath(), BoggleUiState())
+    storeOf(Path("${appStorage}/saved.json"), BoggleUiState())
 }
 
 @Preview

@@ -19,7 +19,7 @@ fun initKoin(enableNetworkLogs: Boolean = false, appDeclaration: KoinAppDeclarat
 fun commonModule() = module {
     single<AppCoroutineDispatchers> { AppCoroutineDispatchersImpl() }
     single { createBoardGenerator() }
-    single { BoggleViewModel(get() , get(), get()) }
+    single { BoggleViewModel(get() , get(), get(), get()) }
 }
 
 fun createBoardGenerator() = BoardGenerator()

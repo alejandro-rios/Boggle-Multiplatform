@@ -11,6 +11,7 @@ import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Failure
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Success
 import com.alejandrorios.bogglemultiplatform.domain.repository.BoggleRepository
 import com.alejandrorios.bogglemultiplatform.domain.repository.LocalRepository
+import com.alejandrorios.bogglemultiplatform.domain.utils.dispatchers.AppCoroutineDispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,7 @@ import org.jetbrains.compose.resources.readResourceBytes
 import kotlin.collections.set
 
 class BoggleViewModel(
+    private val appCoroutineDispatchers: AppCoroutineDispatchers,
     private val repository: BoggleRepository,
     private val boardGenerator: BoardGenerator,
     private val localRepository: LocalRepository
@@ -35,7 +37,7 @@ class BoggleViewModel(
     private var positionsSet = mutableSetOf<Int>()
 
     fun gameStart() {
-        viewModelScope.launch {
+        viewModelScope.launch(appCoroutineDispatchers.io) {
             localRepository.getBoggleUiState().collect { gameState ->
                 if (gameState != null && gameState.result.isNotEmpty()) {
                     _uiState.update { currentState ->
@@ -69,7 +71,7 @@ class BoggleViewModel(
     }
 
     fun createNewGame() {
-        viewModelScope.launch {
+        viewModelScope.launch(appCoroutineDispatchers.io) {
             val boardMap: MutableMap<Int, String> = mutableMapOf()
             val useAPI = _uiState.value.useAPI
             val isEnglish = _uiState.value.isEnglish
@@ -131,7 +133,7 @@ class BoggleViewModel(
     }
 
     private fun getSolution(board: List<String>) {
-        viewModelScope.launch {
+        viewModelScope.launch(appCoroutineDispatchers.io) {
             if (_uiState.value.useAPI) {
                 repository.fetchWordsFromAPI(board).collect { result ->
                     when (result) {
@@ -201,7 +203,7 @@ class BoggleViewModel(
             )
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(appCoroutineDispatchers.io) {
             localRepository.saveBoggleUiState(_uiState.value)
         }
     }
@@ -244,7 +246,7 @@ class BoggleViewModel(
     }
 
     fun getWordDefinition(word: String, isFromHint: Boolean = false) {
-        viewModelScope.launch {
+        viewModelScope.launch(appCoroutineDispatchers.io) {
             repository.getDefinition(word).collect { result ->
                 when (result) {
                     is Failure -> {}

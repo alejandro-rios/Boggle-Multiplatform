@@ -30,11 +30,11 @@ jobs:
 
       - name: Build
         run: |
-          ./gradlew jsBrowserDistribution --no-configuration-cache
+          ./gradlew wasmJsBrowserDistribution --no-configuration-cache
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.6.3
 
         with:
           branch: gh-pages
-          folder: composeApp/build/dist/js/productionExecutable
+          folder: composeApp/build/dist/wasmJs/productionExecutable

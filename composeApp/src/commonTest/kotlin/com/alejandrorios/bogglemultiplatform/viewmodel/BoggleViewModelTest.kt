@@ -8,6 +8,7 @@ import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse
 import com.alejandrorios.bogglemultiplatform.domain.repository.BoggleRepository
 import com.alejandrorios.bogglemultiplatform.domain.repository.LocalRepository
+import com.alejandrorios.bogglemultiplatform.domain.utils.dispatchers.AppCoroutineDispatchers
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleViewModel
 import com.alejandrorios.bogglemultiplatform.utils.mockedBoard
@@ -23,6 +24,7 @@ import dev.mokkery.matcher.any
 import dev.mokkery.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
@@ -56,9 +58,18 @@ class BoggleViewModelTest {
 
     private lateinit var viewModel: BoggleViewModel
 
+    private val appCoroutineDispatchers = mock<AppCoroutineDispatchers> {
+        every { io } returns UnconfinedTestDispatcher()
+    }
+
     @BeforeTest
     fun setUp() {
-        viewModel = BoggleViewModel(repository, boardGenerator, localRepository)
+        viewModel = BoggleViewModel(
+            appCoroutineDispatchers = appCoroutineDispatchers,
+            repository = repository,
+            boardGenerator = boardGenerator,
+            localRepository = localRepository
+        )
     }
 
     /**
