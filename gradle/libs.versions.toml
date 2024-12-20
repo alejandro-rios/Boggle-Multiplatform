@@ -1,7 +1,5 @@
 [versions]
-# Can't use 2.1.0 yet because this error:
-# https://slack-chats.kotlinlang.org/t/23451053/klib-resolver-the-same-unique-name-kotlin-found-in-more-than
-kotlin = "2.0.20"
+kotlin = "2.1.0"
 agp = "8.7.3"
 
 androidx-appcompat = "1.7.0"
@@ -14,10 +12,10 @@ ktor = "3.0.2"
 kotlinx-serialization = "1.7.3"
 kstore = "0.9.1"
 harawata-appdirs = "1.2.2"
-koin = "3.6.0-alpha3"
-koinCompose = "1.2.0-alpha3"
+koin = "4.0.1-Beta1"
+koinCompose = "4.0.1-Beta1"
 turbine = "1.2.0"
-mokkery = "2.5.1"
+mokkery = "2.6.1"
 
 [libraries]
 
