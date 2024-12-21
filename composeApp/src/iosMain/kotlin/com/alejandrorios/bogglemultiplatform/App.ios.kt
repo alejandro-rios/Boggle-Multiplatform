@@ -3,10 +3,11 @@ package com.alejandrorios.bogglemultiplatform
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
-import okio.Path.Companion.toPath
+import kotlinx.io.files.Path
 
 actual val store: KStore<BoggleUiState> by lazy {
-    storeOf("${appStorage}/saved.json".toPath(), BoggleUiState())
+    storeOf(Path("${appStorage}/saved.json"), BoggleUiState())
 }
-actual val isAndroid: Boolean
-    get() = false
+
+actual val currentPlatform: KotlinPlatform
+    get() = KotlinPlatform.IOS

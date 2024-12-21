@@ -25,10 +25,10 @@ fun BoggleDie(
     isAWord: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
+        elevation = 0.dp,
         backgroundColor = getCardColor(selected, isAWord)
     ) {
         Box(
@@ -58,7 +58,7 @@ fun BoggleDie(
             Text(
                 text = letter,
                 fontSize = if (letter == "Qu") 32.sp else 38.sp,
-                color = getLetterColor(selected, isAWord),
+                color = getLetterColor(selected),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(4.dp)
@@ -67,26 +67,19 @@ fun BoggleDie(
     }
 }
 
-fun getCardColor(selected: Boolean, isAWord: Boolean): Color = if (selected && isAWord) {
-    Color(0xFFD28B2D)
-} else {
-    Color.LightGray
+fun getCardColor(selected: Boolean, isAWord: Boolean): Color = when {
+    selected && isAWord -> Color(0xFFD28B2D)
+    selected -> Color(0xFF1F4E78)
+    else -> Color.LightGray
 }
 
 fun getBoxColor(selected: Boolean, isAWord: Boolean): Color = when {
     selected && isAWord -> Color(0xFFD28B2D)
-    selected -> Color.LightGray
+    selected -> Color(0xFF5F666E)
     else -> Color.White
 }
 
-fun getLetterColor(selected: Boolean, isAWord: Boolean): Color = if (selected && isAWord) {
-    Color.White
-} else {
-    Color.Black
-}
-
-//@Preview
-@Composable
-fun BoggleDiePreview() {
-    BoggleDie(letter = "E", selected = false, isAWord = false, modifier = Modifier.padding(10.dp))
+fun getLetterColor(selected: Boolean): Color = when {
+    selected -> Color.White
+    else -> Color.Black
 }

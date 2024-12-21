@@ -31,6 +31,16 @@ internal fun App() {
 
 var appStorage: String? = ""
 
-expect val store: KStore<BoggleUiState>
+enum class KotlinPlatform {
+    ANDROID, IOS ,WASM, JS, DESKTOP;
 
-expect val isAndroid: Boolean
+    val isMobile get() = this == ANDROID || this == IOS
+
+    val isWeb get() = this == JS || this == WASM
+
+    val isAndroid get() = this == ANDROID
+}
+
+expect val currentPlatform: KotlinPlatform
+
+expect val store: KStore<BoggleUiState>

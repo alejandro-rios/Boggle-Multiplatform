@@ -13,7 +13,7 @@ import com.alejandrorios.bogglemultiplatform.ui.components.BoggleDie
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import io.github.xxfast.kstore.KStore
 import io.github.xxfast.kstore.file.storeOf
-import okio.Path.Companion.toPath
+import kotlinx.io.files.Path
 
 class AndroidApp : Application() {
     companion object {
@@ -35,11 +35,11 @@ class AppActivity : ComponentActivity() {
 }
 
 actual val store: KStore<BoggleUiState> by lazy {
-    storeOf("${appStorage}/saved.json".toPath(), BoggleUiState())
+    storeOf(Path("${appStorage}/saved.json"), BoggleUiState())
 }
 
-actual val isAndroid: Boolean
-    get() = true
+actual val currentPlatform: KotlinPlatform
+    get() = KotlinPlatform.ANDROID
 
 @Preview(showBackground = true)
 @Composable

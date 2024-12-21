@@ -3,6 +3,7 @@ package com.alejandrorios.bogglemultiplatform.ui.screen
 import com.alejandrorios.bogglemultiplatform.data.models.DictionaryResponse
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import kotlinx.serialization.Serializable
+import kotlin.math.floor
 
 @Serializable
 data class BoggleUiState(
@@ -16,9 +17,19 @@ data class BoggleUiState(
     val wordsCount: WordsCount = WordsCount(),
     val score: Int = 0,
     val isFinish: Boolean = false,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val useAPI: Boolean = true,
     val isEnglish: Boolean = true,
     val definition: DictionaryResponse? = null,
     val hintDefinition: DictionaryResponse? = null
-)
+) {
+
+    val progress: String
+        get() = if (wordsGuessed.isEmpty()) {
+            "0"
+        } else {
+            val number = (floor((wordsGuessed.size / result.size.toFloat()).times(100.0) * 10 + 0.5) / 10).toFloat()
+
+            "${if(number % 1 == 0f) number.toInt() else number}"
+        }
+}

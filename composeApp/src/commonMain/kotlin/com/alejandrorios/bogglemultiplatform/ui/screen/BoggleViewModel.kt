@@ -84,7 +84,13 @@ class BoggleViewModel(
             }
 
             _uiState.update { currentState ->
-                currentState.copy(boardMap = boardMap, board = board, useAPI = useAPI, isEnglish = isEnglish, isLoading = true)
+                currentState.copy(
+                    boardMap = boardMap,
+                    board = board,
+                    useAPI = useAPI,
+                    isEnglish = isEnglish,
+                    isLoading = true
+                )
             }
 
             getSolution(board.toList())
@@ -251,7 +257,7 @@ class BoggleViewModel(
                 when (result) {
                     is Failure -> {}
                     is Success -> _uiState.update { currentState ->
-                        if(isFromHint) {
+                        if (isFromHint) {
                             currentState.copy(hintDefinition = result.data[0])
                         } else {
                             currentState.copy(definition = result.data[0])

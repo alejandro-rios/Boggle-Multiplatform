@@ -33,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,14 +56,12 @@ import com.alejandrorios.bogglemultiplatform.ui.components.VerticalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.WordCounterRow
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_onPrimary
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_primary
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
 @Composable
 fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel = koinInject()) {
     val boggleUiState by boggleViewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val onRotateTriggered = remember { mutableStateOf(false) }
 
@@ -131,6 +128,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
         },
         content = { innerPadding ->
             if (boggleUiState.isLoading) {
+                print("ISLoading")
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
@@ -138,6 +136,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                     CircularProgressIndicator(modifier = Modifier.width(64.dp))
                 }
             } else {
+                print("ISNOTLoading")
                 Column(
                     modifier = modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -157,14 +156,15 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                                 fontSize = 24.sp
                             )
                         }
+                        VerticalSpacer(spacing = 16.dp)
+                        Text(
+                            text = "${boggleUiState.progress}%",
+                            fontSize = 20.sp
+                        )
                         VerticalSpacer(spacing = 20.dp)
                         BoggleBoard(
-                            progress = boggleUiState.wordsGuessed.size / boggleUiState.result.size.toFloat(),
-                            wordsGuessed = boggleUiState.wordsGuessed.size.toString(),
-                            color = Color(0xFF1F4E78),
-                            board = boggleUiState.board,
+                            state = boggleUiState,
                             modifier = Modifier.size(350.dp),
-                            isAWord = boggleUiState.isAWord,
                             onDragEnded = boggleViewModel::addWord,
                             updateKeys = boggleViewModel::evaluateWord,
                             triggerRotation = onRotateTriggered.value,

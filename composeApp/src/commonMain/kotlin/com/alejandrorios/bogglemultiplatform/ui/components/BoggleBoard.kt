@@ -4,6 +4,7 @@ import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -27,108 +28,107 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.alejandrorios.bogglemultiplatform.isAndroid
+import com.alejandrorios.bogglemultiplatform.currentPlatform
+import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import com.alejandrorios.bogglemultiplatform.utils.photoGridDragHandler
 
 @Composable
 fun BoggleBoard(
-    progress: Float = 0f,
-    wordsGuessed: String = "0",
-    color: Color,
-    board: List<String>,
+    state: BoggleUiState,
+    color: Color = Color(0xFF1F4E78),
     modifier: Modifier = Modifier,
-    isAWord: Boolean,
     onDragEnded: () -> Unit,
     updateKeys: (values: List<Int>, isFromTap: Boolean) -> Unit,
     triggerRotation: Boolean = false,
     onRotatedTriggered: () -> Unit,
 ) {
     val selectedIds = rememberSaveable { mutableStateOf(emptySet<Int>()) }
-    val state = rememberLazyGridState()
+    val listState = rememberLazyGridState()
+
+    // State holders
     val updatedTrigger = rememberUpdatedState(triggerRotation)
-
-    val pathWithProgress by remember { mutableStateOf(Path()) }
-    val pathMeasure by remember { mutableStateOf(PathMeasure()) }
+    val pathWithProgress = remember { Path() }
+    val fullPath = remember { Path() }
+    val pathMeasure = remember { PathMeasure() }
     val path = remember { Path() }
-    val textMeasurer = rememberTextMeasurer()
 
-    val style = TextStyle(
-        fontSize = 13.sp,
-        fontWeight = FontWeight.Bold,
-        color = Color.White
-    )
-
-    val borderProgress = animateFloatAsState(
-        targetValue = progress,
+    // Animation states
+    val borderProgress by animateFloatAsState(
+        targetValue = state.wordsGuessed.size / state.result.size.toFloat(),
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
         finishedListener = {
             selectedIds.value = emptySet()
         }
-    ).value
+    )
 
-    val isRotated = rememberSaveable { mutableFloatStateOf(0f) }
-    val dieRotated = rememberSaveable { mutableFloatStateOf(0f) }
+    // Rotation states with their animations
+    val (boardRotation, setBoardRotation) = rememberSaveable { mutableFloatStateOf(0f) }
+    val (dieRotation, setDieRotation) = rememberSaveable { mutableFloatStateOf(0f) }
+
     val boardRotationAngle by animateFloatAsState(
-        targetValue = isRotated.value,
-        animationSpec = tween(durationMillis = 1000, easing = FastOutLinearInEasing),
+        targetValue = boardRotation,
+        animationSpec = tween(
+            durationMillis = 1000,
+            easing = FastOutLinearInEasing
+        ),
         finishedListener = {
-            dieRotated.value += -90f
+            setDieRotation(dieRotation - 90f)
         }
     )
 
     val dieRotationAngle by animateFloatAsState(
-        targetValue = dieRotated.value,
-        animationSpec = tween(durationMillis = 800, easing = FastOutLinearInEasing),
-        finishedListener = {
-            onRotatedTriggered()
-        }
+        targetValue = dieRotation,
+        animationSpec = tween(
+            durationMillis = 800,
+            easing = FastOutLinearInEasing
+        ),
+        finishedListener = { onRotatedTriggered() }
     )
 
+    // Handle rotation trigger
     DisposableEffect(updatedTrigger.value) {
         if (updatedTrigger.value) {
-            val rotatedValue = isRotated.value
-            isRotated.value = rotatedValue + 90f
+            setBoardRotation(boardRotation + 90f)
         }
         onDispose { }
     }
 
+    // Custom drawing
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .rotate(boardRotationAngle)
             .drawWithCache {
-                var progressEndPos: Offset
-                val textLayoutResult = textMeasurer.measure(wordsGuessed, style)
+                // Create the path only once during cache creation
+                val cornerRadiusPx = 16.dp.toPx()
+                val strokeWidthPx = 10.dp.toPx()
+
+                path.reset()
+                path.addRoundRect(
+                    RoundRect(
+                        Rect(offset = Offset.Zero, size),
+                        cornerRadius = CornerRadius(cornerRadiusPx)
+                    )
+                )
 
                 onDrawBehind {
                     scale(1f, -1f, Offset(size.width / 2, size.height / 2)) {
-                        rotate(if (isAndroid) -90f else 0f) {
-                            if (path.isEmpty) {
-                                path.addRoundRect(
-                                    RoundRect(
-                                        Rect(offset = Offset.Zero, size),
-                                        cornerRadius = CornerRadius(16.dp.toPx())
-                                    )
-                                )
-                            }
+                        rotate(if (currentPlatform.isAndroid) -90f else 0f) {
+                            // Draw base rectangle
                             drawPath(path, color = color)
 
+                            // Update progress path
                             pathWithProgress.reset()
-
                             pathMeasure.setPath(path, forceClosed = false)
+
+                            // Calculate progress segments
                             pathMeasure.getSegment(
                                 startDistance = 0f,
                                 stopDistance = pathMeasure.length * borderProgress,
@@ -136,74 +136,63 @@ fun BoggleBoard(
                                 startWithMoveTo = true
                             )
 
+                            // Update full path
+                            fullPath.reset()
+                            pathMeasure.getSegment(
+                                startDistance = 0f,
+                                stopDistance = pathMeasure.length,
+                                fullPath,
+                                startWithMoveTo = true
+                            )
+
+                            // Draw background path
+                            drawPath(
+                                path = fullPath,
+                                style = Stroke(strokeWidthPx),
+                                color = Color(0xFF9C9C9C)
+                            )
+
+                            // Draw progress path
                             drawPath(
                                 path = pathWithProgress,
-                                style = Stroke(5.dp.toPx()),
+                                style = Stroke(strokeWidthPx),
                                 color = Color(0xFFD28B2D)
                             )
-
-                            progressEndPos =
-                                if (pathMeasure.getPosition(pathMeasure.length * progress) != Offset.Unspecified) {
-                                    val (x, y) = pathMeasure.getPosition(pathMeasure.length * progress)
-                                    Offset(x, y)
-                                } else {
-                                    Offset(0f, 0f)
-                                }
-
-                            drawCircle(
-                                color = Color(0xFFD28B2D),
-                                center = progressEndPos,
-                                radius = 16.dp.toPx()
-                            )
-
-                            scale(1f, -1f, progressEndPos) {
-                                rotate(if (isAndroid) -90f + dieRotationAngle else dieRotationAngle, progressEndPos) {
-                                    drawText(
-                                        textMeasurer = textMeasurer,
-                                        text = wordsGuessed,
-                                        style = style,
-                                        topLeft = Offset(
-                                            x = progressEndPos.x - textLayoutResult.size.width / 2,
-                                            y = progressEndPos.y - textLayoutResult.size.height / 2
-                                        ),
-                                        size = Size(
-                                            textLayoutResult.size.width.toFloat() + 20, textLayoutResult.size.height.toFloat() +
-                                                    20
-                                        ),
-                                    )
-                                }
-                            }
                         }
                     }
                 }
             }
     ) {
         LazyVerticalGrid(
-            state = state,
+            state = listState,
             columns = GridCells.Fixed(4),
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalArrangement = Arrangement.spacedBy(18.dp),
             contentPadding = PaddingValues(20.dp),
-            modifier = modifier.photoGridDragHandler(state, selectedIds, onDragEnded, updateKeys),
+            modifier = modifier.photoGridDragHandler(listState, selectedIds, onDragEnded, updateKeys),
             userScrollEnabled = false
         ) {
-            items(board.size, key = { it }) { index ->
+            items(state.board.size, key = { it }) { index ->
                 val selected = selectedIds.value.contains(index)
 
                 BoggleDie(
-                    letter = board[index],
+                    letter = state.board[index],
                     selected = selected,
-                    isAWord = isAWord,
+                    isAWord = state.isAWord,
                     modifier = Modifier
                         .rotate(dieRotationAngle)
-                        .clickable {
-                            selectedIds.value = if (selected) {
-                                selectedIds.value.minus(index)
-                            } else {
-                                selectedIds.value.plus(index)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = {
+                                selectedIds.value = if (selected) {
+                                    selectedIds.value.minus(index)
+                                } else {
+                                    selectedIds.value.plus(index)
+                                }
+                                updateKeys(selectedIds.value.toList(), true)
                             }
-                            updateKeys(selectedIds.value.toList(), true)
-                        }
+                        )
                 )
             }
         }

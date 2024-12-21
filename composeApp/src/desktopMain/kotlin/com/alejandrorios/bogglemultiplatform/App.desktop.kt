@@ -26,5 +26,5 @@ fun DefaultPreview() {
     )
 }
 
-actual val isAndroid: Boolean
-    get() = false
+actual val currentPlatform: KotlinPlatform
+    get() = KotlinPlatform.DESKTOP
