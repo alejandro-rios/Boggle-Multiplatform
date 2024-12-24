@@ -1,5 +1,6 @@
 package com.alejandrorios.bogglemultiplatform.ui.screen
 
+import com.alejandrorios.bogglemultiplatform.currentPlatform
 import com.alejandrorios.bogglemultiplatform.data.models.DictionaryResponse
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 import kotlinx.serialization.Serializable
@@ -28,8 +29,12 @@ data class BoggleUiState(
         get() = if (wordsGuessed.isEmpty()) {
             "0"
         } else {
-            val number = (floor((wordsGuessed.size / result.size.toFloat()).times(100.0) * 10 + 0.5) / 10).toFloat()
+            val number = if (currentPlatform.isWasm) {
+                (floor((wordsGuessed.size / result.size.toFloat()).times(100.0) * 10 + 0.5) / 10)
+            } else {
+                (floor((wordsGuessed.size / result.size.toFloat()).times(100.0) * 10 + 0.5) / 10).toFloat()
+            }
 
-            "${if(number % 1 == 0f) number.toInt() else number}"
+            "${if (number.toFloat() % 1 == 0f) number.toInt() else number}"
         }
 }

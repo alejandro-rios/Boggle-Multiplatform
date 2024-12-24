@@ -128,7 +128,6 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
         },
         content = { innerPadding ->
             if (boggleUiState.isLoading) {
-                print("ISLoading")
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
@@ -136,7 +135,6 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                     CircularProgressIndicator(modifier = Modifier.width(64.dp))
                 }
             } else {
-                print("ISNOTLoading")
                 Column(
                     modifier = modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally

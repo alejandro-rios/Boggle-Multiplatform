@@ -38,6 +38,8 @@ enum class KotlinPlatform {
 
     val isWeb get() = this == JS || this == WASM
 
+    val isWasm get() = this == WASM
+
     val isAndroid get() = this == ANDROID
 }
 
