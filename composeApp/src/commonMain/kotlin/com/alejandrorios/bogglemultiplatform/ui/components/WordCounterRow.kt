@@ -1,13 +1,14 @@
 package com.alejandrorios.bogglemultiplatform.ui.components
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.alejandrorios.bogglemultiplatform.currentPlatform
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
 
 @Composable
@@ -17,8 +18,8 @@ fun WordCounterRow(
     onWordClick: (String) -> Unit
 ) {
     Row(
-        modifier = modifier.padding(horizontal = 16.dp).fillMaxWidth(),
-        horizontalArrangement = if(currentPlatform.isWeb) Arrangement.Center else Arrangement.SpaceEvenly
+        modifier = modifier.padding(horizontal = 16.dp).fillMaxWidth().horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.Center
     ) {
         WordCounter(
             numberOfLetters = "3",

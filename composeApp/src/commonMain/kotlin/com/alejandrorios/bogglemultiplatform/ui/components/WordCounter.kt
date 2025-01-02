@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.alejandrorios.bogglemultiplatform.currentPlatform
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
 
 @Composable
@@ -42,7 +41,7 @@ fun WordCounter(
         ).value
 
         Column(
-            modifier = Modifier.padding(horizontal = if (currentPlatform.isWeb) 32.dp else 0.dp),
+            modifier = Modifier.padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
