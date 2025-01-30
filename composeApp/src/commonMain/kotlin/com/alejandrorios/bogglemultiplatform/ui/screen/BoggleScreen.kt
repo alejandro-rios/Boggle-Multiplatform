@@ -29,8 +29,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -57,23 +55,35 @@ import com.alejandrorios.bogglemultiplatform.ui.components.WordCounterRow
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_onPrimary
 import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_primary
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 
 @Composable
-fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel = koinInject()) {
-    val boggleUiState by boggleViewModel.uiState.collectAsState()
+fun BoggleScreen(
+    uiState: BoggleUiState,
+    modifier: Modifier = Modifier,
+    onGameStart: () -> Unit,
+    onCreateNewGame: () -> Unit,
+    onCloseDialog: () -> Unit,
+    onCloseDefinitionDialog: () -> Unit,
+    onCloseHintDefinitionDialog: () -> Unit,
+    onAddWord: () -> Unit,
+    onEvaluateWord: (dieKeys: List<Int>, isFromTap: Boolean) -> Unit,
+    onUseAPI: (useAPI: Boolean) -> Unit,
+    onChangeLanguage: (useAPI: Boolean) -> Unit,
+    onGetHint: () -> Unit,
+    onGetWordDefinition: (word: String) -> Unit,
+) {
     val snackBarHostState = remember { SnackbarHostState() }
     val onRotateTriggered = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        boggleViewModel.gameStart()
+        onGameStart()
     }
 
-    if (boggleUiState.isFinish) {
+    if (uiState.isFinish) {
         AlertDialog(
             onDismissRequest = { },
             confirmButton = {
-                Button(onClick = boggleViewModel::closeDialog) {
+                Button(onClick = onCloseDialog) {
                     Text(stringResource(Res.string.label_ok))
                 }
             },
@@ -82,40 +92,38 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
         )
     }
 
-    if (boggleUiState.definition != null) {
+    if (uiState.definition != null) {
         AlertDialog(
             onDismissRequest = { },
             confirmButton = {
-                Button(onClick = boggleViewModel::closeDefinitionDialog) {
+                Button(onClick = onCloseDefinitionDialog) {
                     Text(stringResource(Res.string.label_ok))
                 }
             },
             title = { Text(stringResource(Res.string.label_definition)) },
             text = {
                 Text(
-                    "${boggleUiState.definition?.word}: ${
-                        boggleUiState.definition?.meanings?.first()?.definitions?.first()
-                            ?.definition
+                    "${uiState.definition.word}: ${
+                        uiState.definition.meanings.first().definitions.first().definition
                     }"
                 )
             },
         )
     }
 
-    if (boggleUiState.hintDefinition != null) {
+    if (uiState.hintDefinition != null) {
         AlertDialog(
             onDismissRequest = { },
             confirmButton = {
-                Button(onClick = boggleViewModel::closeHintDefinitionDialog) {
+                Button(onClick = onCloseHintDefinitionDialog) {
                     Text(stringResource(Res.string.label_ok))
                 }
             },
-            title = { Text(boggleUiState.hintDefinition!!.getWordAsHint()) },
+            title = { Text(uiState.hintDefinition.getWordAsHint()) },
             text = {
                 Text(
                     "${
-                        boggleUiState.hintDefinition?.meanings?.first()?.definitions?.first()
-                            ?.definition
+                        uiState.hintDefinition.meanings.first().definitions.first().definition
                     }"
                 )
             },
@@ -127,7 +135,7 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
             SnackbarHost(hostState = snackBarHostState)
         },
         content = { innerPadding ->
-            if (boggleUiState.isLoading) {
+            if (uiState.isLoading) {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
@@ -145,26 +153,26 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                         VerticalSpacer(spacing = 16.dp)
                         Row {
                             Text(
-                                text = stringResource(Res.string.total_words, boggleUiState.result.size),
+                                text = stringResource(Res.string.total_words, uiState.result.size),
                                 fontSize = 24.sp
                             )
                             HorizontalSpacer(spacing = 20.dp)
                             Text(
-                                text = stringResource(Res.string.score, boggleUiState.score),
+                                text = stringResource(Res.string.score, uiState.score),
                                 fontSize = 24.sp
                             )
                         }
                         VerticalSpacer(spacing = 16.dp)
                         Text(
-                            text = "${boggleUiState.progress}%",
+                            text = "${uiState.progress}%",
                             fontSize = 20.sp
                         )
                         VerticalSpacer(spacing = 20.dp)
                         BoggleBoard(
-                            state = boggleUiState,
+                            state = uiState,
                             modifier = Modifier.size(350.dp),
-                            onDragEnded = boggleViewModel::addWord,
-                            updateKeys = boggleViewModel::evaluateWord,
+                            onDragEnded = onAddWord,
+                            updateKeys = onEvaluateWord,
                             triggerRotation = onRotateTriggered.value,
                         ) {
                             onRotateTriggered.value = false
@@ -173,23 +181,23 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
                                 modifier = Modifier.size(20.dp),
-                                checked = boggleUiState.useAPI,
-                                onCheckedChange = boggleViewModel::useAPI
+                                checked = uiState.useAPI,
+                                onCheckedChange = onUseAPI
                             )
                             HorizontalSpacer()
                             Text(text = stringResource(Res.string.use_api), fontSize = 20.sp)
                             HorizontalSpacer()
                             Switch(
-                                checked = boggleUiState.isEnglish,
-                                enabled = !boggleUiState.useAPI,
-                                onCheckedChange = boggleViewModel::changeLanguage
+                                checked = uiState.isEnglish,
+                                enabled = !uiState.useAPI,
+                                onCheckedChange = onChangeLanguage
                             )
                             Text(text = stringResource(Res.string.language), fontSize = 20.sp)
                         }
                         VerticalSpacer()
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Button(
-                                onClick = boggleViewModel::createNewGame,
+                                onClick = onCreateNewGame,
                                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
                                 colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
                             ) {
@@ -217,14 +225,14 @@ fun BoggleScreen(modifier: Modifier = Modifier, boggleViewModel: BoggleViewModel
                                     containerColor = md_theme_light_primary,
                                     contentColor = md_theme_light_onPrimary,
                                 ),
-                                onClick = boggleViewModel::getHint,
+                                onClick = onGetHint,
                                 content = { Icon(Icons.Outlined.Plagiarism, stringResource(Res.string.label_hint)) }
                             )
                         }
                         VerticalSpacer(spacing = 20.dp)
                         WordCounterRow(
-                            wordsCount = boggleUiState.wordsCount,
-                            onWordClick = boggleViewModel::getWordDefinition,
+                            wordsCount = uiState.wordsCount,
+                            onWordClick = onGetWordDefinition,
                         )
                     }
                     VerticalSpacer(spacing = 20.dp)
