@@ -128,11 +128,11 @@ kotlin {
 
 android {
     namespace = "com.alejandrorios.bogglemultiplatform"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
 
         applicationId = "com.alejandrorios.bogglemultiplatform.androidApp"
         versionCode = 1
