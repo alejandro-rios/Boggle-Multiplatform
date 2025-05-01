@@ -2,6 +2,8 @@ package com.alejandrorios.bogglemultiplatform.di
 
 import com.alejandrorios.bogglemultiplatform.data.BoardGenerator
 import com.alejandrorios.bogglemultiplatform.data.utils.dispatchers.AppCoroutineDispatchersImpl
+import com.alejandrorios.bogglemultiplatform.domain.utils.DictionaryProvider
+import com.alejandrorios.bogglemultiplatform.domain.utils.ResourceDictionaryProvider
 import com.alejandrorios.bogglemultiplatform.domain.utils.dispatchers.AppCoroutineDispatchers
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleViewModel
 import org.koin.core.context.startKoin
@@ -18,8 +20,9 @@ fun initKoin(enableNetworkLogs: Boolean = false, appDeclaration: KoinAppDeclarat
 
 fun commonModule() = module {
     single<AppCoroutineDispatchers> { AppCoroutineDispatchersImpl() }
+    single<DictionaryProvider> { ResourceDictionaryProvider() }
     single { createBoardGenerator() }
-    single { BoggleViewModel(get() , get(), get(), get()) }
+    single { BoggleViewModel(get() , get(), get(), get(), get()) }
 }
 
 fun createBoardGenerator() = BoardGenerator()

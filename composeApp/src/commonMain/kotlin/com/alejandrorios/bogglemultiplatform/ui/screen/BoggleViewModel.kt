@@ -11,6 +11,7 @@ import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Failure
 import com.alejandrorios.bogglemultiplatform.data.utils.CallResponse.Success
 import com.alejandrorios.bogglemultiplatform.domain.repository.BoggleRepository
 import com.alejandrorios.bogglemultiplatform.domain.repository.LocalRepository
+import com.alejandrorios.bogglemultiplatform.domain.utils.DictionaryProvider
 import com.alejandrorios.bogglemultiplatform.domain.utils.dispatchers.AppCoroutineDispatchers
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.delay
@@ -19,15 +20,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.InternalResourceApi
-import org.jetbrains.compose.resources.readResourceBytes
 import kotlin.collections.set
 
 class BoggleViewModel(
     private val appCoroutineDispatchers: AppCoroutineDispatchers,
     private val repository: BoggleRepository,
     private val boardGenerator: BoardGenerator,
-    private val localRepository: LocalRepository
+    private val localRepository: LocalRepository,
+    private val dictionaryProvider: DictionaryProvider
 ) : ViewModel() {
 
     // Game UI state
@@ -227,9 +227,8 @@ class BoggleViewModel(
         getWordDefinition(word, true)
     }
 
-    @OptIn(InternalResourceApi::class)
     private suspend fun getWordsFromLocal(board: List<String>): List<String> {
-        val dictionary = readResourceBytes(boardGenerator.language.filePath).decodeToString().split("\r?\n|\r".toRegex()).toList()
+        val dictionary = dictionaryProvider.getWordsFromDictionary(boardGenerator.language)
 
         return boardGenerator.getBoardSolutionTwo(board = board, dictionary = dictionary)
     }

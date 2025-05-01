@@ -10,7 +10,6 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import org.koin.dsl.module
 
@@ -21,7 +20,6 @@ fun networkModule(enableNetworkLogs: Boolean = false) = module {
     single<BoggleRepository> { BoggleRepositoryImpl(get()) }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 fun createJson() = Json { isLenient = true; ignoreUnknownKeys = true; explicitNulls = false }
 
 fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {
