@@ -4,7 +4,7 @@ import com.alejandrorios.bogglemultiplatform.appStorage
 import platform.Foundation.NSHomeDirectory
 import platform.UIKit.UIViewController
 
-fun MainViewController(): UIViewController = ComposeUIViewController {
+fun MainViewController(): UIViewController = ComposeUIViewController(configure = { enforceStrictPlistSanityCheck = false }) {
     appStorage = NSHomeDirectory()
 
     App()
