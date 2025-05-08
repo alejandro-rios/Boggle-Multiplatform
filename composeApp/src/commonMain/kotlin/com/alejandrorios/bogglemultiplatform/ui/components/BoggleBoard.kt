@@ -3,7 +3,6 @@ package com.alejandrorios.bogglemultiplatform.ui.components
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +36,8 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.unit.dp
 import com.alejandrorios.bogglemultiplatform.currentPlatform
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
-import com.alejandrorios.bogglemultiplatform.utils.photoGridDragHandler
+import com.alejandrorios.bogglemultiplatform.utils.boggleDieModifier
+import com.alejandrorios.bogglemultiplatform.utils.boggleBoardDragHandler
 
 @Composable
 fun BoggleBoard(
@@ -169,11 +169,12 @@ fun BoggleBoard(
             verticalArrangement = Arrangement.spacedBy(18.dp),
             horizontalArrangement = Arrangement.spacedBy(18.dp),
             contentPadding = PaddingValues(20.dp),
-            modifier = modifier.photoGridDragHandler(listState, selectedIds, onDragEnded, updateKeys),
+            modifier = modifier.boggleBoardDragHandler(listState, selectedIds, onDragEnded, updateKeys),
             userScrollEnabled = false
         ) {
             items(state.board.size, key = { it }) { index ->
                 val selected = selectedIds.value.contains(index)
+                val interactionSource = remember { MutableInteractionSource() }
 
                 BoggleDie(
                     letter = state.board[index],
@@ -181,9 +182,8 @@ fun BoggleBoard(
                     isAWord = state.isAWord,
                     modifier = Modifier
                         .rotate(dieRotationAngle)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
+                        .boggleDieModifier(
+                            interactionSource = interactionSource,
                             onClick = {
                                 selectedIds.value = if (selected) {
                                     selectedIds.value.minus(index)
@@ -191,7 +191,9 @@ fun BoggleBoard(
                                     selectedIds.value.plus(index)
                                 }
                                 updateKeys(selectedIds.value.toList(), true)
-                            }
+                            },
+                            selectedKeys = selectedIds.value.toList(),
+                            index = index
                         )
                 )
             }

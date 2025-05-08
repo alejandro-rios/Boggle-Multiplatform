@@ -2,6 +2,7 @@ package com.alejandrorios.bogglemultiplatform.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,23 +35,20 @@ fun BoggleDie(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .padding(5.dp)
+                .padding(4.dp)
                 .clip(CircleShape)
                 .background(color = getBoxColor(selected, isAWord))
-                // If this is removed you'll see the difference only on Android
+                .fillMaxSize()
                 .layout { measurable, constraints ->
-                    // Measure the composable
                     val placeable = measurable.measure(constraints)
 
-                    //get the current max dimension to assign width=height
+                    // Calculate the largest dimension to make a perfect circle
                     val currentHeight = placeable.height
                     var heightCircle = currentHeight
                     if (placeable.width > heightCircle)
                         heightCircle = placeable.width
 
-                    //assign the dimension and the center position
                     layout(heightCircle, heightCircle) {
-                        // Where the composable gets placed
                         placeable.placeRelative(0, (heightCircle - currentHeight) / 2)
                     }
                 }
