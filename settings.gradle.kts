@@ -10,7 +10,6 @@ pluginManagement {
                 includeGroupAndSubgroups("com.google")
             }
         }
-        gradlePluginPortal()
         mavenCentral()
     }
 }
