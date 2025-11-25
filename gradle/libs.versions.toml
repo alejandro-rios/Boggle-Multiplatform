@@ -15,7 +15,7 @@ harawata-appdirs = "1.5.0"
 koin = "4.1.1"
 koinCompose = "4.1.1"
 turbine = "1.2.1"
-mokkery = "2.8.0"
+mokkery = "3.0.0"
 
 [libraries]
 
