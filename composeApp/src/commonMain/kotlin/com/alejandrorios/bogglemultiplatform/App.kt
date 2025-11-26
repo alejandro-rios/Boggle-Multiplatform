@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.alejandrorios.bogglemultiplatform.di.commonModule
 import com.alejandrorios.bogglemultiplatform.di.databaseModule
 import com.alejandrorios.bogglemultiplatform.di.networkModule
@@ -17,7 +16,6 @@ import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleViewModel
 import com.alejandrorios.bogglemultiplatform.ui.theme.AppTheme
 import io.github.xxfast.kstore.KStore
 import org.koin.compose.KoinApplication
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

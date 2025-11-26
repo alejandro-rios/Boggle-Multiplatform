@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,8 +30,17 @@ fun BoggleDie(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        elevation = 0.dp,
-        backgroundColor = getCardColor(selected, isAWord)
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 0.dp,
+            pressedElevation = 0.dp,
+            focusedElevation = 0.dp,
+            hoveredElevation = 0.dp,
+            draggedElevation = 0.dp,
+            disabledElevation = 0.dp
+        ),
+        colors = CardDefaults.cardColors(
+            containerColor = getCardColor(selected, isAWord),
+        ),
     ) {
         Box(
             contentAlignment = Alignment.Center,

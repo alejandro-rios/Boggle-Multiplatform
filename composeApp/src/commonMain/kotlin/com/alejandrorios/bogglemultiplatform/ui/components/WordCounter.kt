@@ -9,9 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ProgressIndicatorDefaults
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -58,9 +58,9 @@ fun WordCounter(
                     fontSize = 14.sp
                 )
                 CircularProgressIndicator(
-                    progress = animatedProgress,
+                    progress = { animatedProgress },
                     strokeWidth = 6.dp,
-                    backgroundColor = Color(0xFFEBEBEB),
+                    trackColor = Color(0xFFEBEBEB),
                     strokeCap = StrokeCap.Round
                 )
             }

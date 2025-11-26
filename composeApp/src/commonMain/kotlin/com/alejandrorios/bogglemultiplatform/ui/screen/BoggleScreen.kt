@@ -11,16 +11,16 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Switch
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Plagiarism
 import androidx.compose.material.icons.outlined.Rotate90DegreesCw
@@ -199,7 +199,7 @@ fun BoggleScreen(
                             Button(
                                 onClick = onCreateNewGame,
                                 contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-                                colors = ButtonDefaults.buttonColors(backgroundColor = md_theme_light_primary)
+                                colors = ButtonDefaults.buttonColors(containerColor = md_theme_light_primary)
                             ) {
                                 Text(
                                     text = stringResource(Res.string.new_game),
