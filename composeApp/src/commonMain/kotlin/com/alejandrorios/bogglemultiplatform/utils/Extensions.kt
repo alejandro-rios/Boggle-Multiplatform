@@ -2,10 +2,14 @@ package com.alejandrorios.bogglemultiplatform.utils
 
 import androidx.compose.foundation.lazy.grid.LazyGridItemInfo
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toIntRect
 import androidx.compose.ui.unit.toOffset
+import boggle_multiplatform.composeapp.generated.resources.Res
+import boggle_multiplatform.composeapp.generated.resources.letter_q
+import org.jetbrains.compose.resources.stringResource
 import kotlin.math.abs
 
 /**
@@ -47,3 +51,6 @@ fun LazyGridState.gridItemKeyAtPosition(hitPoint: Offset): LazyGridItemInfo? =
 
 // Extension function to get the die key
 fun LazyGridItemInfo.dieKey(): Int = this.key as Int
+
+@Composable
+fun String.isQ(): Boolean = this == stringResource(Res.string.letter_q)

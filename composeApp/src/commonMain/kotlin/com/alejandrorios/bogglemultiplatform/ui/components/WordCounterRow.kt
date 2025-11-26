@@ -9,7 +9,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import boggle_multiplatform.composeapp.generated.resources.Res
+import boggle_multiplatform.composeapp.generated.resources.word_counter_3
+import boggle_multiplatform.composeapp.generated.resources.word_counter_4
+import boggle_multiplatform.composeapp.generated.resources.word_counter_5
+import boggle_multiplatform.composeapp.generated.resources.word_counter_6
+import boggle_multiplatform.composeapp.generated.resources.word_counter_7
+import boggle_multiplatform.composeapp.generated.resources.word_counter_more
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun WordCounterRow(
@@ -22,32 +30,32 @@ fun WordCounterRow(
         horizontalArrangement = Arrangement.Center
     ) {
         WordCounter(
-            numberOfLetters = "3",
+            numberOfLetters = stringResource(Res.string.word_counter_3),
             wordPair = wordsCount.threeLetters,
             onWordClick = { onWordClick(it) },
         )
         WordCounter(
-            numberOfLetters = "4",
+            numberOfLetters = stringResource(Res.string.word_counter_4),
             wordPair = wordsCount.fourLetters,
             onWordClick = { onWordClick(it) },
         )
         WordCounter(
-            numberOfLetters = "5",
+            numberOfLetters = stringResource(Res.string.word_counter_5),
             wordPair = wordsCount.fiveLetters,
             onWordClick = { onWordClick(it) },
         )
         WordCounter(
-            numberOfLetters = "6",
+            numberOfLetters = stringResource(Res.string.word_counter_6),
             wordPair = wordsCount.sixLetters,
             onWordClick = { onWordClick(it) },
         )
         WordCounter(
-            numberOfLetters = "7",
+            numberOfLetters = stringResource(Res.string.word_counter_7),
             wordPair = wordsCount.sevenLetters,
             onWordClick = { onWordClick(it) },
         )
         WordCounter(
-            numberOfLetters = "8+",
+            numberOfLetters = stringResource(Res.string.word_counter_more),
             wordPair = wordsCount.moreThanSevenLetters,
             onWordClick = { onWordClick(it) },
         )

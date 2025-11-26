@@ -1,5 +1,6 @@
 package com.alejandrorios.bogglemultiplatform.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,7 +34,9 @@ fun WordCounter(
     wordPair: WordPair,
     onWordClick: (String) -> Unit,
 ) {
-    if (wordPair.wordsTotal != 0) {
+    AnimatedVisibility(
+        visible = wordPair.wordsTotal != 0,
+    ) {
         val progress = wordPair.wordsFound.size / wordPair.wordsTotal.toFloat()
         val animatedProgress = animateFloatAsState(
             targetValue = progress,

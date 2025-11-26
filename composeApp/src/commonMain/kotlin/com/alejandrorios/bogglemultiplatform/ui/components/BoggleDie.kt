@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alejandrorios.bogglemultiplatform.utils.isQ
 
 @Composable
 fun BoggleDie(
@@ -65,7 +66,7 @@ fun BoggleDie(
         ) {
             Text(
                 text = letter,
-                fontSize = if (letter == "Qu") 32.sp else 38.sp,
+                fontSize = if (letter.isQ()) 32.sp else 38.sp,
                 color = getLetterColor(selected),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,

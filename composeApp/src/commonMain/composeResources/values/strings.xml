@@ -12,4 +12,11 @@
     <string name="label_hint">Give me a hint</string>
     <string name="message_hint">Try with: %s</string>
     <string name="total_words">%1$d words</string>
+    <string name="letter_q">Qu</string>
+    <string name="word_counter_3">3</string>
+    <string name="word_counter_4">4</string>
+    <string name="word_counter_5">5</string>
+    <string name="word_counter_6">6</string>
+    <string name="word_counter_7">7</string>
+    <string name="word_counter_more">8+</string>
 </resources>

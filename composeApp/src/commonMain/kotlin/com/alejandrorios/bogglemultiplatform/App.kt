@@ -48,7 +48,7 @@ internal fun App() {
     }
 }
 
-var appStorage: String? = ""
+var appStorage: String = ""
 
 enum class KotlinPlatform {
     ANDROID, IOS ,WASM, JS, DESKTOP;

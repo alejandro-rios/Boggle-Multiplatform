@@ -3,7 +3,6 @@ package com.alejandrorios.bogglemultiplatform.ui.components
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -36,8 +35,8 @@ import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.unit.dp
 import com.alejandrorios.bogglemultiplatform.currentPlatform
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
-import com.alejandrorios.bogglemultiplatform.utils.boggleDieModifier
 import com.alejandrorios.bogglemultiplatform.utils.boggleBoardDragHandler
+import com.alejandrorios.bogglemultiplatform.utils.boggleDieModifier
 
 @Composable
 fun BoggleBoard(
@@ -174,7 +173,6 @@ fun BoggleBoard(
         ) {
             items(state.board.size, key = { it }) { index ->
                 val selected = selectedIds.value.contains(index)
-                val interactionSource = remember { MutableInteractionSource() }
 
                 BoggleDie(
                     letter = state.board[index],
@@ -183,14 +181,14 @@ fun BoggleBoard(
                     modifier = Modifier
                         .rotate(dieRotationAngle)
                         .boggleDieModifier(
-                            interactionSource = interactionSource,
                             onClick = {
-                                selectedIds.value = if (selected) {
-                                    selectedIds.value.minus(index)
+                                if (selected) {
+                                    selectedIds.value = emptySet()
+                                    updateKeys(emptyList(), true)
                                 } else {
-                                    selectedIds.value.plus(index)
+                                    selectedIds.value = selectedIds.value.plus(index)
+                                    updateKeys(selectedIds.value.toList(), true)
                                 }
-                                updateKeys(selectedIds.value.toList(), true)
                             },
                             selectedKeys = selectedIds.value.toList(),
                             index = index
