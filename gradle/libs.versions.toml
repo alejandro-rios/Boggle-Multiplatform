@@ -1,12 +1,14 @@
 [versions]
 kotlin = "2.2.21"
 agp = "8.13.1"
+android-compileSdk = "36"
+android-minSdk = "24"
+android-targetSdk = "36"
 
 androidx-appcompat = "1.7.1"
 androidx-lifecycle = "2.9.6"
 androidx-activityCompose = "1.12.0"
-jetbrains-compose = "1.9.3"
-compose-uitooling = "1.9.5"
+composeMultiplatform = "1.9.3"
 kotlinx-coroutines = "1.10.2"
 ktor = "3.3.2"
 kotlinx-serialization = "1.9.0"
@@ -21,7 +23,6 @@ mokkery = "3.0.0"
 
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-activityCompose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
-compose-uitooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose-uitooling" }
 
 # Viewmodel
 androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
@@ -56,14 +57,16 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koinComp
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koinCompose" }
 
 # Testing
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 [plugins]
 
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "jetbrains-compose" }
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
 all-open = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alejandrorios.bogglemultiplatform.utils.isQ
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun BoggleDie(
@@ -91,4 +92,22 @@ fun getBoxColor(selected: Boolean, isAWord: Boolean): Color = when {
 fun getLetterColor(selected: Boolean): Color = when {
     selected -> Color.White
     else -> Color.Black
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NormalDie() {
+    BoggleDie(letter = "Qu", selected = false, modifier = Modifier.padding(10.dp))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SelectedDie() {
+    BoggleDie(letter = "B", selected = true, modifier = Modifier.padding(10.dp))
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WordDie() {
+    BoggleDie(letter = "B", selected = true, isAWord = true, modifier = Modifier.padding(10.dp))
 }

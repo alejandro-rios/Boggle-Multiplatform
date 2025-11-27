@@ -1,5 +1,5 @@
 rootProject.name = "Boggle-Multiplatform"
-include(":composeApp")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
@@ -28,3 +28,5 @@ dependencyResolutionManagement {
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 }
+
+include(":composeApp")

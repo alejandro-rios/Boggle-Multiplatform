@@ -7,15 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iosApp.swift */; };
+		8D1ECA302ED8B1A200799A04 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1ECA2F2ED8B1A200799A04 /* ContentView.swift */; };
+		8D1ECA352ED8B74A00799A04 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8D1ECA332ED8B74A00799A04 /* Config.xcconfig */; };
+		A93A953B29CC810C00F8E227 /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A93A953A29CC810C00F8E227 /* iOSApp.swift */; };
 		A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A953E29CC810D00F8E227 /* Assets.xcassets */; };
 		A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A93A954129CC810D00F8E227 /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		8D807B792A81C3B400E6272C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1ECA2F2ED8B1A200799A04 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8D1ECA332ED8B74A00799A04 /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		8D807B792A81C3B400E6272C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A93A953729CC810C00F8E227 /* Boggle Multiplatform.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Boggle Multiplatform.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A93A953A29CC810C00F8E227 /* iosApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosApp.swift; sourceTree = "<group>"; };
+		A93A953A29CC810C00F8E227 /* iOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSApp.swift; sourceTree = "<group>"; };
 		A93A953E29CC810D00F8E227 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A93A954129CC810D00F8E227 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -31,19 +35,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		979913F6AE5D271756D4649D /* Pods */ = {
+		8D1ECA342ED8B74A00799A04 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				8D1ECA332ED8B74A00799A04 /* Config.xcconfig */,
 			);
-			path = Pods;
+			path = Configuration;
 			sourceTree = "<group>";
 		};
 		A93A952E29CC810C00F8E227 = {
 			isa = PBXGroup;
 			children = (
+				8D1ECA342ED8B74A00799A04 /* Configuration */,
 				A93A953929CC810C00F8E227 /* iosApp */,
 				A93A953829CC810C00F8E227 /* Products */,
-				979913F6AE5D271756D4649D /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,10 +63,11 @@
 		A93A953929CC810C00F8E227 /* iosApp */ = {
 			isa = PBXGroup;
 			children = (
-				8D807B792A81C3B400E6272C /* Info.plist */,
-				A93A953A29CC810C00F8E227 /* iosApp.swift */,
-				A93A953E29CC810D00F8E227 /* Assets.xcassets */,
 				A93A954029CC810D00F8E227 /* Preview Content */,
+				A93A953E29CC810D00F8E227 /* Assets.xcassets */,
+				8D1ECA2F2ED8B1A200799A04 /* ContentView.swift */,
+				8D807B792A81C3B400E6272C /* Info.plist */,
+				A93A953A29CC810C00F8E227 /* iOSApp.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -133,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A93A954229CC810D00F8E227 /* Preview Assets.xcassets in Resources */,
+				8D1ECA352ED8B74A00799A04 /* Config.xcconfig in Resources */,
 				A93A953F29CC810D00F8E227 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +149,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		8D5F861F2DC5827D000FEB20 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -155,7 +163,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
+			shellScript = "if [ \"YES\" = \"$OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED\" ]; then\n  echo \"Skipping Gradle build task invocation due to OVERRIDE_KOTLIN_BUILD_IDE_SUPPORTED environment variable set to \\\"YES\\\"\"\n  exit 0\nfi\ncd \"$SRCROOT/..\"\n./gradlew :composeApp:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -164,7 +172,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A93A953B29CC810C00F8E227 /* iosApp.swift in Sources */,
+				8D1ECA302ED8B1A200799A04 /* ContentView.swift in Sources */,
+				A93A953B29CC810C00F8E227 /* iOSApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,16 +310,18 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alejandrorios.bogglemultiplatform.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alejandrorios.bogglemultiplatform.BoggleMultiplatform;
 				PRODUCT_NAME = "Boggle Multiplatform";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEAM_ID = "";
 			};
 			name = Debug;
 		};
@@ -330,16 +341,18 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.alejandrorios.bogglemultiplatform.iosApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alejandrorios.bogglemultiplatform.BoggleMultiplatform;
 				PRODUCT_NAME = "Boggle Multiplatform";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEAM_ID = "";
 			};
 			name = Release;
 		};
