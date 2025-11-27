@@ -192,6 +192,7 @@ fun BoggleScreen(
                                 enabled = !uiState.useAPI,
                                 onCheckedChange = onChangeLanguage
                             )
+                            HorizontalSpacer()
                             Text(text = stringResource(Res.string.language), fontSize = 20.sp)
                         }
                         VerticalSpacer()
