@@ -1,19 +1,18 @@
 package com.alejandrorios.bogglemultiplatform.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 private val LightColorScheme = lightColorScheme(
@@ -42,14 +41,6 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = md_theme_dark_onSurface,
 )
 
-private val AppShapes = Shapes(
-    extraSmall = RoundedCornerShape(2.dp),
-    small = RoundedCornerShape(4.dp),
-    medium = RoundedCornerShape(8.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(32.dp)
-)
-
 private val AppTypography = Typography(
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
@@ -59,7 +50,7 @@ private val AppTypography = Typography(
 )
 
 @Composable
-internal fun AppTheme(
+internal fun BoggleTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
@@ -70,12 +61,22 @@ internal fun AppTheme(
 //        DarkColorScheme
 //    }
 
-    MaterialTheme(
-        colorScheme = LightColorScheme,
-        typography = AppTypography,
-        shapes = AppShapes,
-        content = {
-            Surface(content = content, color = Color.White)
-        }
-    )
+    CompositionLocalProvider(
+        LocalDimensions provides dimensions(),
+    ) {
+        MaterialTheme(
+            colorScheme = LightColorScheme,
+            typography = AppTypography,
+            content = {
+                Surface(content = content, color = Color.White)
+            }
+        )
+    }
+}
+
+object BoggleTheme {
+    val dimensions: BoggleDimensions
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalDimensions.current
 }

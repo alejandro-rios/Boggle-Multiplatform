@@ -11,8 +11,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.unit.dp
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
+import com.alejandrorios.bogglemultiplatform.utils.BoggleBoardGridSize
 import com.alejandrorios.bogglemultiplatform.utils.boggleBoardDragHandler
 import com.alejandrorios.bogglemultiplatform.utils.boggleDieModifier
 
@@ -29,8 +30,11 @@ fun BoggleBoard(
     val listState = rememberLazyGridState()
 
     val borderProgress = remember(state.wordsGuessed.size, state.result.size) {
-        if (state.result.isEmpty()) 0f
-        else state.wordsGuessed.size / state.result.size.toFloat()
+        if (state.result.isEmpty()) {
+            0f
+        } else {
+            state.wordsGuessed.size / state.result.size.toFloat()
+        }
     }
 
     AnimatedBorderBox(
@@ -45,10 +49,10 @@ fun BoggleBoard(
 
         LazyVerticalGrid(
             state = listState,
-            columns = GridCells.Fixed(4),
-            verticalArrangement = Arrangement.spacedBy(18.dp),
-            horizontalArrangement = Arrangement.spacedBy(18.dp),
-            contentPadding = PaddingValues(20.dp),
+            columns = GridCells.Fixed(BoggleBoardGridSize),
+            verticalArrangement = Arrangement.spacedBy(BoggleTheme.dimensions.spacing.md),
+            horizontalArrangement = Arrangement.spacedBy(BoggleTheme.dimensions.spacing.md),
+            contentPadding = PaddingValues(BoggleTheme.dimensions.spacing.lg),
             modifier = modifier.boggleBoardDragHandler(listState, selectedIds, onDragEnded, updateKeys),
             userScrollEnabled = false
         ) {

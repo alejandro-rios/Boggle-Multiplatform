@@ -11,22 +11,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Plagiarism
+import androidx.compose.material.icons.outlined.Rotate90DegreesCw
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Plagiarism
-import androidx.compose.material.icons.outlined.Rotate90DegreesCw
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import boggle_multiplatform.composeapp.generated.resources.Res
+import boggle_multiplatform.composeapp.generated.resources.game_progress
 import boggle_multiplatform.composeapp.generated.resources.label_definition
 import boggle_multiplatform.composeapp.generated.resources.label_game_finished
 import boggle_multiplatform.composeapp.generated.resources.label_hint
@@ -52,8 +52,8 @@ import com.alejandrorios.bogglemultiplatform.ui.components.BoggleBoard
 import com.alejandrorios.bogglemultiplatform.ui.components.HorizontalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.VerticalSpacer
 import com.alejandrorios.bogglemultiplatform.ui.components.WordCounterRow
-import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_onPrimary
-import com.alejandrorios.bogglemultiplatform.ui.theme.md_theme_light_primary
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
+import com.alejandrorios.bogglemultiplatform.utils.BoggleBoardSize
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -140,47 +140,50 @@ fun BoggleScreen(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    CircularProgressIndicator(modifier = Modifier.width(64.dp))
+                    CircularProgressIndicator(modifier = Modifier.width(BoggleTheme.dimensions.spacing.xxxxxxl))
                 }
             } else {
                 Column(
-                    modifier = modifier.padding(innerPadding).fillMaxWidth().verticalScroll(rememberScrollState()),
+                    modifier = modifier
+                        .padding(innerPadding)
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        VerticalSpacer(spacing = 16.dp)
+                        VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.md)
                         Row {
                             Text(
                                 text = stringResource(Res.string.total_words, uiState.result.size),
                                 fontSize = 24.sp
                             )
-                            HorizontalSpacer(spacing = 20.dp)
+                            HorizontalSpacer(spacing = BoggleTheme.dimensions.spacing.lg)
                             Text(
                                 text = stringResource(Res.string.score, uiState.score),
                                 fontSize = 24.sp
                             )
                         }
-                        VerticalSpacer(spacing = 16.dp)
+                        VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.md)
                         Text(
-                            text = "${uiState.progress}%",
+                            text = stringResource(Res.string.game_progress, uiState.progress),
                             fontSize = 20.sp
                         )
-                        VerticalSpacer(spacing = 20.dp)
+                        VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.lg)
                         BoggleBoard(
                             state = uiState,
-                            modifier = Modifier.size(350.dp),
+                            modifier = Modifier.size(BoggleBoardSize.dp),
                             onDragEnded = onAddWord,
                             updateKeys = onEvaluateWord,
                             triggerRotation = onRotateTriggered.value,
                         ) {
                             onRotateTriggered.value = false
                         }
-                        VerticalSpacer(spacing = 24.dp)
+                        VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.xl)
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(
-                                modifier = Modifier.size(20.dp),
+                                modifier = Modifier.size(BoggleTheme.dimensions.spacing.lg),
                                 checked = uiState.useAPI,
                                 onCheckedChange = onUseAPI
                             )
@@ -199,8 +202,10 @@ fun BoggleScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Button(
                                 onClick = onCreateNewGame,
-                                contentPadding = PaddingValues(vertical = 10.dp, horizontal = 16.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = md_theme_light_primary)
+                                contentPadding = PaddingValues(
+                                    vertical = BoggleTheme.dimensions.spacing.sm,
+                                    horizontal = BoggleTheme.dimensions.spacing.md,
+                                ),
                             ) {
                                 Text(
                                     text = stringResource(Res.string.new_game),
@@ -211,32 +216,34 @@ fun BoggleScreen(
                             HorizontalSpacer()
                             FilledIconButton(
                                 enabled = !onRotateTriggered.value,
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = md_theme_light_primary,
-                                    contentColor = md_theme_light_onPrimary,
-                                ),
                                 onClick = {
                                     onRotateTriggered.value = true
                                 },
-                                content = { Icon(Icons.Outlined.Rotate90DegreesCw, stringResource(Res.string.rotate)) }
+                                content = {
+                                    Icon(
+                                        Icons.Outlined.Rotate90DegreesCw,
+                                        stringResource(Res.string.rotate),
+                                    )
+                                }
                             )
                             HorizontalSpacer()
                             FilledIconButton(
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = md_theme_light_primary,
-                                    contentColor = md_theme_light_onPrimary,
-                                ),
                                 onClick = onGetHint,
-                                content = { Icon(Icons.Outlined.Plagiarism, stringResource(Res.string.label_hint)) }
+                                content = {
+                                    Icon(
+                                        Icons.Outlined.Plagiarism,
+                                        stringResource(Res.string.label_hint),
+                                    )
+                                }
                             )
                         }
-                        VerticalSpacer(spacing = 20.dp)
+                        VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.lg)
                         WordCounterRow(
                             wordsCount = uiState.wordsCount,
                             onWordClick = onGetWordDefinition,
                         )
                     }
-                    VerticalSpacer(spacing = 20.dp)
+                    VerticalSpacer(spacing = BoggleTheme.dimensions.spacing.lg)
                 }
             }
         }

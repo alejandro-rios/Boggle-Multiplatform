@@ -5,13 +5,14 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.alejandrorios.bogglemultiplatform.App
 import com.alejandrorios.bogglemultiplatform.appStorage
+import com.alejandrorios.bogglemultiplatform.utils.windowHeight
 import kotlinx.io.files.Path
 import kotlinx.io.files.SystemFileSystem
 import net.harawata.appdirs.AppDirsFactory
 
 fun main() {
     application {
-        val windowState: WindowState = rememberWindowState(width = 800.dp, height = 800.dp)
+        val windowState: WindowState = rememberWindowState(height = windowHeight.dp)
         appStorage = AppDirsFactory.getInstance()
             .getUserDataDir("com.alejandrorios.bogglemultiplatform", "1.0.0", "alejandrorios")
 

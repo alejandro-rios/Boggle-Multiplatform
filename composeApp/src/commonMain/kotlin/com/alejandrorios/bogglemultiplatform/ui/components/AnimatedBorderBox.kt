@@ -31,8 +31,8 @@ import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.alejandrorios.bogglemultiplatform.currentPlatform
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
 
 @Composable
 fun AnimatedBorderBox(
@@ -41,8 +41,8 @@ fun AnimatedBorderBox(
     backgroundColor: Color = Color(0xFF1F4E78),
     borderColor: Color = Color(0xFF9C9C9C),
     progressColor: Color = Color(0xFFD28B2D),
-    cornerRadius: Dp = 16.dp,
-    strokeWidth: Dp = 10.dp,
+    cornerRadius: Dp = BoggleTheme.dimensions.cornerRadius.md,
+    strokeWidth: Dp = BoggleTheme.dimensions.strokeWidth.borderBox,
     onProgressComplete: () -> Unit = {},
     onRotationComplete: () -> Unit = {},
     modifier: Modifier = Modifier,

@@ -19,4 +19,5 @@
     <string name="word_counter_6">6</string>
     <string name="word_counter_7">7</string>
     <string name="word_counter_more">8+</string>
+    <string name="game_progress">%1$d%</string>
 </resources>

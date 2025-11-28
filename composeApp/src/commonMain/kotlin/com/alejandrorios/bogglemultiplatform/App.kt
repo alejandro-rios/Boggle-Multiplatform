@@ -13,7 +13,7 @@ import com.alejandrorios.bogglemultiplatform.di.networkModule
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleScreen
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleUiState
 import com.alejandrorios.bogglemultiplatform.ui.screen.BoggleViewModel
-import com.alejandrorios.bogglemultiplatform.ui.theme.AppTheme
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
 import io.github.xxfast.kstore.KStore
 import org.koin.compose.KoinApplication
 import org.koin.compose.viewmodel.koinViewModel
@@ -23,7 +23,7 @@ internal fun App() {
     KoinApplication(application = {
         modules(commonModule(), networkModule(), databaseModule())
     }) {
-        AppTheme {
+        BoggleTheme {
             val boggleViewModel: BoggleViewModel = koinViewModel()
             val boggleUiState by boggleViewModel.uiState.collectAsStateWithLifecycle()
 

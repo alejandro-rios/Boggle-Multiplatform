@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
+import com.alejandrorios.bogglemultiplatform.utils.cardElevationZero
 import com.alejandrorios.bogglemultiplatform.utils.isQ
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -31,15 +33,8 @@ fun BoggleDie(
 ) {
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp,
-            pressedElevation = 0.dp,
-            focusedElevation = 0.dp,
-            hoveredElevation = 0.dp,
-            draggedElevation = 0.dp,
-            disabledElevation = 0.dp
-        ),
+        shape = RoundedCornerShape(BoggleTheme.dimensions.cornerRadius.md),
+        elevation = CardDefaults.cardElevation(cardElevationZero.dp),
         colors = CardDefaults.cardColors(
             containerColor = getCardColor(selected, isAWord),
         ),
@@ -47,7 +42,7 @@ fun BoggleDie(
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .padding(4.dp)
+                .padding(BoggleTheme.dimensions.spacing.xxs)
                 .clip(CircleShape)
                 .background(color = getBoxColor(selected, isAWord))
                 .fillMaxSize()
@@ -71,7 +66,7 @@ fun BoggleDie(
                 color = getLetterColor(selected),
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(BoggleTheme.dimensions.spacing.xxs)
             )
         }
     }
@@ -97,17 +92,17 @@ fun getLetterColor(selected: Boolean): Color = when {
 @Preview(showBackground = true)
 @Composable
 fun NormalDie() {
-    BoggleDie(letter = "Qu", selected = false, modifier = Modifier.padding(10.dp))
+    BoggleDie(letter = "Qu", selected = false, modifier = Modifier.padding(BoggleTheme.dimensions.spacing.sm))
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SelectedDie() {
-    BoggleDie(letter = "B", selected = true, modifier = Modifier.padding(10.dp))
+    BoggleDie(letter = "B", selected = true, modifier = Modifier.padding(BoggleTheme.dimensions.spacing.sm))
 }
 
 @Preview(showBackground = true)
 @Composable
 fun WordDie() {
-    BoggleDie(letter = "B", selected = true, isAWord = true, modifier = Modifier.padding(10.dp))
+    BoggleDie(letter = "B", selected = true, isAWord = true, modifier = Modifier.padding(BoggleTheme.dimensions.spacing.sm))
 }

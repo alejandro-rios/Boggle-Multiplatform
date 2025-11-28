@@ -24,9 +24,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.alejandrorios.bogglemultiplatform.data.models.WordPair
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
 
 @Composable
 fun WordCounter(
@@ -44,7 +44,7 @@ fun WordCounter(
         ).value
 
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(horizontal = BoggleTheme.dimensions.spacing.md),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -53,7 +53,10 @@ fun WordCounter(
             )
             VerticalSpacer()
             Box(
-                modifier = Modifier.background(color = Color(0xFFEBEBEB), shape = RoundedCornerShape(100)),
+                modifier = Modifier.background(
+                    color = Color(0xFFEBEBEB),
+                    shape = RoundedCornerShape(BoggleTheme.dimensions.cornerRadius.full)
+                ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -62,7 +65,7 @@ fun WordCounter(
                 )
                 CircularProgressIndicator(
                     progress = { animatedProgress },
-                    strokeWidth = 6.dp,
+                    strokeWidth = BoggleTheme.dimensions.strokeWidth.wordCounterProgress,
                     trackColor = Color(0xFFEBEBEB),
                     strokeCap = StrokeCap.Round
                 )

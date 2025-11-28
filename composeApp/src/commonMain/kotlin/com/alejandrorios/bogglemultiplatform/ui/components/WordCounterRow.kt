@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import boggle_multiplatform.composeapp.generated.resources.Res
 import boggle_multiplatform.composeapp.generated.resources.word_counter_3
 import boggle_multiplatform.composeapp.generated.resources.word_counter_4
@@ -17,6 +16,7 @@ import boggle_multiplatform.composeapp.generated.resources.word_counter_6
 import boggle_multiplatform.composeapp.generated.resources.word_counter_7
 import boggle_multiplatform.composeapp.generated.resources.word_counter_more
 import com.alejandrorios.bogglemultiplatform.data.models.WordsCount
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -26,7 +26,10 @@ fun WordCounterRow(
     onWordClick: (String) -> Unit
 ) {
     Row(
-        modifier = modifier.padding(horizontal = 16.dp).fillMaxWidth().horizontalScroll(rememberScrollState()),
+        modifier = modifier
+            .padding(horizontal = BoggleTheme.dimensions.spacing.md)
+            .fillMaxWidth()
+            .horizontalScroll(rememberScrollState()),
         horizontalArrangement = Arrangement.Center
     ) {
         WordCounter(

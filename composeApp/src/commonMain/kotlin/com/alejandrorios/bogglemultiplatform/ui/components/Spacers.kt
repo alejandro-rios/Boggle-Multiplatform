@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
 
 @Composable
-fun VerticalSpacer(spacing: Dp = 10.dp) = Spacer(modifier = Modifier.height(spacing))
+fun VerticalSpacer(spacing: Dp = BoggleTheme.dimensions.spacing.sm) = Spacer(modifier = Modifier.height(spacing))
 
 @Composable
-fun HorizontalSpacer(spacing: Dp = 10.dp) = Spacer(modifier = Modifier.width(spacing))
+fun HorizontalSpacer(spacing: Dp = BoggleTheme.dimensions.spacing.sm) = Spacer(modifier = Modifier.width(spacing))
