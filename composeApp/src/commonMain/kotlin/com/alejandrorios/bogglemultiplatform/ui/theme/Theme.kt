@@ -3,17 +3,12 @@ package com.alejandrorios.bogglemultiplatform.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_light_primary,
@@ -41,14 +36,6 @@ private val DarkColorScheme = darkColorScheme(
     onSurface = md_theme_dark_onSurface,
 )
 
-private val AppTypography = Typography(
-    bodyMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 16.sp
-    )
-)
-
 @Composable
 internal fun BoggleTheme(
     useDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -63,10 +50,10 @@ internal fun BoggleTheme(
 
     CompositionLocalProvider(
         LocalDimensions provides dimensions(),
+        LocalTypography provides typography(),
     ) {
         MaterialTheme(
             colorScheme = LightColorScheme,
-            typography = AppTypography,
             content = {
                 Surface(content = content, color = Color.White)
             }
@@ -76,7 +63,12 @@ internal fun BoggleTheme(
 
 object BoggleTheme {
     val dimensions: BoggleDimensions
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalDimensions.current
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalDimensions.current
+
+    val typography: BoggleTypography
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalTypography.current
 }

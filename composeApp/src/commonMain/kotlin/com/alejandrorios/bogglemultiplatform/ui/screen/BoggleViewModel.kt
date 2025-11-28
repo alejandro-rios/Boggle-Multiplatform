@@ -261,7 +261,7 @@ class BoggleViewModel(
         viewModelScope.launch(appCoroutineDispatchers.io + coroutineExceptionHandler) {
             repository.getDefinition(word).collect { result ->
                 when (result) {
-                    is Failure -> {}
+                    is Failure -> println("Definition not found for $word")
                     is Success -> _uiState.update { currentState ->
                         if (isFromHint) {
                             currentState.copy(hintDefinition = result.data[0])

@@ -37,4 +37,10 @@ data class BoggleUiState(
 
             "${if (number.toFloat() % 1 == 0f) number.toInt() else number}"
         }
+
+    val definitionWord: String
+        get() = definition?.word ?: ""
+
+    val firstDefinition: String
+        get() = definition?.meanings?.first()?.definitions?.first()?.definition ?: ""
 }

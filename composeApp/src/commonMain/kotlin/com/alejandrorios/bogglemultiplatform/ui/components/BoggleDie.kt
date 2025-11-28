@@ -15,11 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.alejandrorios.bogglemultiplatform.ui.theme.BoggleTheme
+import com.alejandrorios.bogglemultiplatform.ui.theme.boardLetter
 import com.alejandrorios.bogglemultiplatform.utils.cardElevationZero
 import com.alejandrorios.bogglemultiplatform.utils.isQ
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -62,10 +60,8 @@ fun BoggleDie(
         ) {
             Text(
                 text = letter,
-                fontSize = if (letter.isQ()) 32.sp else 38.sp,
+                style = BoggleTheme.typography.boardLetter(letter.isQ()),
                 color = getLetterColor(selected),
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(BoggleTheme.dimensions.spacing.xxs)
             )
         }
